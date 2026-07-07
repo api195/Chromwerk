@@ -1,0 +1,159 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { AnimatePresence, motion } from "framer-motion";
+import { navigation } from "@/data/site";
+import { Logo } from "@/components/logo/Logo";
+import { Container } from "@/components/ui/Container";
+import { Button } from "@/components/ui/Button";
+import { useCart } from "@/components/cart/CartProvider";
+import { cn } from "@/lib/utils";
+
+export function Navbar() {
+  const pathname = usePathname();
+  const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const { count, setOpen } = useCart();
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Menü bei Navigation schließen
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
+
+  return (
+    <header
+      className={cn(
+        "fixed inset-x-0 top-0 z-[60] transition-all duration-500",
+        scrolled
+          ? "border-b border-white/10 bg-ink-950/80 backdrop-blur-xl"
+          : "border-b border-transparent bg-transparent"
+      )}
+    >
+      <Container className="flex h-20 items-center justify-between">
+        <Link href="/" aria-label="Zur Startseite">
+          <Logo />
+        </Link>
+
+        {/* Desktop-Navigation */}
+        <nav className="hidden items-center gap-1 xl:flex">
+          {navigation.map((item) => {
+            const active =
+              item.href === "/"
+                ? pathname === "/"
+                : pathname.startsWith(item.href);
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "relative px-3 py-2 text-xs font-medium uppercase tracking-widest transition-colors",
+                  active ? "text-white" : "text-chrome-400 hover:text-chrome-100"
+                )}
+              >
+                {item.label}
+                {active && (
+                  <motion.span
+                    layoutId="nav-active"
+                    className="absolute inset-x-3 -bottom-0.5 h-px bg-crimson"
+                  />
+                )}
+              </Link>
+            );
+          })}
+        </nav>
+
+        <div className="flex items-center gap-2">
+          {/* Warenkorb */}
+          <button
+            onClick={() => setOpen(true)}
+            aria-label="Warenkorb öffnen"
+            className="relative rounded-full border border-white/10 p-2.5 text-chrome-200 transition hover:bg-white/10 hover:text-white"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+              <circle cx="9" cy="21" r="1" />
+              <circle cx="20" cy="21" r="1" />
+              <path d="M1 1h4l2.6 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6" />
+            </svg>
+            {count > 0 && (
+              <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-crimson px-1 text-[10px] font-bold text-white">
+                {count}
+              </span>
+            )}
+          </button>
+
+          <div className="hidden sm:block">
+            <Button href="/termin" variant="primary" size="sm">
+              Termin
+            </Button>
+          </div>
+
+          {/* Mobile-Menü-Button */}
+          <button
+            onClick={() => setMobileOpen((o) => !o)}
+            aria-label="Menü öffnen"
+            aria-expanded={mobileOpen}
+            className="rounded-full border border-white/10 p-2.5 text-chrome-200 transition hover:bg-white/10 xl:hidden"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+              {mobileOpen ? (
+                <path d="M18 6 6 18M6 6l12 12" />
+              ) : (
+                <>
+                  <path d="M3 6h18M3 12h18M3 18h18" />
+                </>
+              )}
+            </svg>
+          </button>
+        </div>
+      </Container>
+
+      {/* Mobile-Navigation */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.nav
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            className="overflow-hidden border-t border-white/10 bg-ink-950/95 backdrop-blur-xl xl:hidden"
+          >
+            <Container className="flex flex-col gap-1 py-4">
+              {navigation.map((item) => {
+                const active =
+                  item.href === "/"
+                    ? pathname === "/"
+                    : pathname.startsWith(item.href);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={cn(
+                      "rounded-lg px-4 py-3 text-sm font-medium uppercase tracking-widest transition",
+                      active
+                        ? "bg-white/5 text-white"
+                        : "text-chrome-300 hover:bg-white/5 hover:text-white"
+                    )}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
+              <Button href="/termin" variant="primary" size="md" className="mt-2">
+                Termin buchen
+              </Button>
+            </Container>
+          </motion.nav>
+        )}
+      </AnimatePresence>
+    </header>
+  );
+}

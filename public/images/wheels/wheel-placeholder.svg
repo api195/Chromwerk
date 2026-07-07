@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <!-- Platzhalter Felge – ersetze diese Datei durch echtes Produktfoto -->
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="42%" r="70%">
+      <stop offset="0%" stop-color="#1b1b20"/>
+      <stop offset="100%" stop-color="#08080a"/>
+    </radialGradient>
+    <linearGradient id="chrome" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="20%" stop-color="#e7e9ee"/>
+      <stop offset="50%" stop-color="#9aa0ab"/>
+      <stop offset="55%" stop-color="#5c616c"/>
+      <stop offset="80%" stop-color="#c9ccd3"/>
+      <stop offset="100%" stop-color="#ffffff"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <g transform="translate(400,300)">
+    <circle r="220" fill="#0c0c0f" stroke="#26262c" stroke-width="18"/>
+    <circle r="185" fill="none" stroke="url(#chrome)" stroke-width="10"/>
+    <g stroke="url(#chrome)" stroke-width="26" stroke-linecap="round">
+      <line x1="0" y1="0" x2="0" y2="-170"/>
+      <line x1="0" y1="0" x2="162" y2="-53"/>
+      <line x1="0" y1="0" x2="100" y2="138"/>
+      <line x1="0" y1="0" x2="-100" y2="138"/>
+      <line x1="0" y1="0" x2="-162" y2="-53"/>
+    </g>
+    <circle r="52" fill="url(#chrome)"/>
+    <circle r="30" fill="#0a0a0c"/>
+    <circle r="30" fill="none" stroke="#e11d2a" stroke-width="4"/>
+  </g>
+  <text x="400" y="560" fill="#5c616c" font-family="Arial, sans-serif" font-size="20" text-anchor="middle" letter-spacing="4">CHROMWERK · FELGE (PLATZHALTER)</text>
+</svg>
