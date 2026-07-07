@@ -15,6 +15,8 @@ export function Navbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  // Auf der Startseite erscheint die Navigation erst nach dem Hero-Intro.
+  const [revealed, setRevealed] = useState(false);
   const { count, setOpen } = useCart();
 
   useEffect(() => {
@@ -24,6 +26,23 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Sichtbarkeit steuern: außerhalb der Startseite sofort, sonst nach Intro
+  useEffect(() => {
+    if (pathname !== "/") {
+      setRevealed(true);
+      return;
+    }
+    setRevealed(false);
+    const onReady = () => setRevealed(true);
+    window.addEventListener("chromwerk:hero-ready", onReady);
+    // Sicherheits-Fallback, falls das Event ausbleibt
+    const fallback = window.setTimeout(() => setRevealed(true), 8000);
+    return () => {
+      window.removeEventListener("chromwerk:hero-ready", onReady);
+      window.clearTimeout(fallback);
+    };
+  }, [pathname]);
+
   // Menü bei Navigation schließen
   useEffect(() => {
     setMobileOpen(false);
@@ -32,10 +51,13 @@ export function Navbar() {
   return (
     <header
       className={cn(
-        "fixed inset-x-0 top-0 z-[60] transition-all duration-500",
+        "fixed inset-x-0 top-0 z-[60] transition-all duration-700",
         scrolled
           ? "border-b border-white/10 bg-ink-950/80 backdrop-blur-xl"
-          : "border-b border-transparent bg-transparent"
+          : "border-b border-transparent bg-transparent",
+        revealed
+          ? "translate-y-0 opacity-100"
+          : "pointer-events-none -translate-y-4 opacity-0"
       )}
     >
       <Container className="flex h-20 items-center justify-between">

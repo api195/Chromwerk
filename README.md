@@ -96,13 +96,28 @@ Platzhalter liegen in `public/images/`:
 
 Einfach durch echte Dateien ersetzen und die Pfade in den `data/`-Dateien anpassen.
 
-### 🛞 3D-Felge
-`src/components/hero/ChromeWheel.tsx` — prozedurales Platzhalter-Modell.
-Kommentar zeigt, wie du ein eigenes GLB/GLTF-Modell (`/public/models/felge.glb`)
-per `useGLTF` einbindest. Die Scroll-/Parallax-Logik bleibt erhalten.
+### 🛞 Cinematische 3D-Hero
+Die Hero-Section liegt in `src/components/hero/`:
 
-Für echte Spiegelungen (z. B. Köln-Skyline auf dem Chrom) kann in
-`src/components/hero/HeroScene.tsx` eine HDR-/Panorama-Textur gesetzt werden.
+- `HeroCinematic.tsx` — Regie: schwarzes Intro → Reflexion → Enthüllung →
+  Logo → Navigation/Text; Scroll-Kamerafahrt; Split-Layout (Text links,
+  Felge rechts). Hier Überschrift, Buttons und Layout anpassen.
+- `scene/ChromeRim.tsx` — prozedurale Chromfelge (PBR, roughness ~0.02).
+  Eigenes GLB/GLTF-Modell (`/public/models/felge.glb`) per `useGLTF`
+  einbinden – Kommentar zeigt wie; Neige-/Rotationslogik bleibt erhalten.
+- `scene/StudioEnvironment.tsx` — kontraststarke Studio-Reflexionen inkl.
+  Köln-Skyline. Für ECHTES HDRI: `<Environment files="/hdri/studio.hdr" />`.
+- `scene/Effects.tsx` — Post-Processing (Bloom, AO, DoF, Vignette), adaptiv.
+- `scene/HeroCanvas.tsx` / `CameraRig.tsx` — Bühne & Kameraführung.
+
+**Performance:** Auf mobilen/schwächeren Geräten (`useDeviceTier`) wird
+automatisch eine reduzierte Variante geladen (weniger Partikel, leichteres
+Post-Processing). `prefers-reduced-motion` überspringt Intro & Animationen.
+Debug-URL-Parameter: `?still=1` (Intro überspringen), `?nofx=1` (ohne Effekte).
+
+Der Bild-Optimizer wird für SVG-Platzhalter automatisch umgangen
+(`src/components/ui/SmartImage.tsx`); echte Fotos (JPG/PNG) werden wieder
+optimiert.
 
 ### 📦 Produkte, Felgen, Projekte
 - Felgen: `src/data/wheels.ts`

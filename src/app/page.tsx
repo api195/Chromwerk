@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Hero } from "@/components/hero/Hero";
+import { HeroCinematic } from "@/components/hero/HeroCinematic";
 import { Stats } from "@/components/sections/Stats";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -23,7 +23,7 @@ const processSteps = [
 export default function HomePage() {
   return (
     <>
-      <Hero />
+      <HeroCinematic />
       <Stats />
 
       {/* Leistungen-Vorschau */}

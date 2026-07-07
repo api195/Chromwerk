@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { SmartImage as Image } from "@/components/ui/SmartImage";
 import { AnimatePresence, motion } from "framer-motion";
 import { useCart } from "./CartProvider";
 import { Button } from "@/components/ui/Button";

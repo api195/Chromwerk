@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { SmartImage as Image } from "@/components/ui/SmartImage";
 import type { Wheel } from "@/types";
 import { Button } from "@/components/ui/Button";
 import { useCart } from "@/components/cart/CartProvider";
