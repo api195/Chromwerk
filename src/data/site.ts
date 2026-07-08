@@ -37,14 +37,11 @@ export const site = {
   url: "https://chromwerk.de",
 
   /**
-   * Hero-Felge (Startseite, Foto-Hero).
-   * ----------------------------------------------------------------
-   * DEIN ECHTES FOTO EINSETZEN:
-   * 1. Lege dein Bild ab: public/images/wheels/chromwerk-hero.jpg
-   * 2. Setze hier den Pfad auf ".jpg".
-   * Aktuell zeigt es einen Platzhalter (.svg).
+   * Hero-Felge (Startseite, Foto-Hero) – echtes Chromwerk-Felgenfoto.
+   * Austauschen: neue Datei unter public/images/wheels/ ablegen und den
+   * Pfad hier anpassen.
    */
-  heroImage: "/images/wheels/chromwerk-hero.svg",
+  heroImage: "/images/wheels/chromwerk-hero.webp",
 };
 
 export type NavItem = { label: string; href: string };
