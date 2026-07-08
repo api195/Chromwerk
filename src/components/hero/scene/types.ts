@@ -12,6 +12,10 @@ export type HeroDrivers = {
   scroll: MutableRefObject<number>;
   /** Normalisierte Mausposition (-1..1) */
   pointer: MutableRefObject<{ x: number; y: number }>;
+  /** Material-Zustand der Felge: 0 = matt/oxidiert, 1 = Hochglanz-Chrom */
+  morph: MutableRefObject<number>;
+  /** Fortschritt des Licht-Sweeps über die Oberfläche (0→1), Szene "Politur" */
+  sweep: MutableRefObject<number>;
   /** Nutzer bevorzugt reduzierte Bewegung */
   reduced: boolean;
 };

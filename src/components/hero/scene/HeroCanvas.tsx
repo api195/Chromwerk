@@ -7,6 +7,7 @@ import { ChromeRim } from "./ChromeRim";
 import { StudioEnvironment } from "./StudioEnvironment";
 import { Dust } from "./Dust";
 import { LightShafts } from "./LightShafts";
+import { SweepLight } from "./SweepLight";
 import { Effects } from "./Effects";
 import { CameraRig } from "./CameraRig";
 import type { HeroDrivers } from "./types";
@@ -67,7 +68,10 @@ export function HeroCanvas({
         color="#ffd9dc"
       />
 
-      <ChromeRim animate={!device.reduced} />
+      <ChromeRim animate={!device.reduced} drivers={drivers} />
+
+      {/* Politur-Lichtsweep (Szene 5) */}
+      <SweepLight drivers={drivers} />
 
       {/* Weicher Kontaktschatten als "Studioboden" */}
       <ContactShadows

@@ -3,6 +3,7 @@
 import { SmartImage as Image } from "@/components/ui/SmartImage";
 import type { Product } from "@/types";
 import { Button } from "@/components/ui/Button";
+import { TiltCard } from "@/components/ui/TiltCard";
 import { useCart } from "@/components/cart/CartProvider";
 import { formatPrice } from "@/lib/utils";
 
@@ -10,7 +11,8 @@ export function ProductCard({ product }: { product: Product }) {
   const { add } = useCart();
 
   return (
-    <article className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-ink-800/60 transition-all duration-500 hover:border-chrome-400/40 hover:shadow-chrome">
+    <TiltCard className="h-full">
+    <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-ink-800/60 transition-all duration-500 hover:border-chrome-400/40 hover:shadow-chrome">
       <div className="relative aspect-square overflow-hidden bg-gradient-to-b from-ink-700 to-ink-900">
         <Image
           src={product.image}
@@ -70,5 +72,6 @@ export function ProductCard({ product }: { product: Product }) {
         </div>
       </div>
     </article>
+    </TiltCard>
   );
 }

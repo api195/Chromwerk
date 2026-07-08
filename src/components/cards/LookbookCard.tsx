@@ -1,12 +1,14 @@
 import { SmartImage as Image } from "@/components/ui/SmartImage";
 import Link from "next/link";
 import type { LookbookProject } from "@/types";
+import { TiltCard } from "@/components/ui/TiltCard";
 
 export function LookbookCard({ project }: { project: LookbookProject }) {
   return (
+    <TiltCard className="h-full">
     <Link
       href={`/lookbook/${project.slug}`}
-      className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-ink-800/60 transition-all duration-500 hover:border-chrome-400/40 hover:shadow-chrome"
+      className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-ink-800/60 transition-all duration-500 hover:border-chrome-400/40 hover:shadow-chrome"
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-ink-900">
         <Image
@@ -48,5 +50,6 @@ export function LookbookCard({ project }: { project: LookbookProject }) {
         </span>
       </div>
     </Link>
+    </TiltCard>
   );
 }

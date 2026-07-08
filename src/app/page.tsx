@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { HeroCinematic } from "@/components/hero/HeroCinematic";
 import { Stats } from "@/components/sections/Stats";
+import { ProcessStory } from "@/components/sections/ProcessStory";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
@@ -11,14 +12,6 @@ import { ProductCard } from "@/components/cards/ProductCard";
 import { services } from "@/data/services";
 import { lookbookProjects } from "@/data/lookbook";
 import { products } from "@/data/products";
-
-// Der Chromwerk-Prozess (Startseite)
-const processSteps = [
-  { n: "01", title: "Analyse", text: "Zustandsprüfung, Vermessung und Beratung zum optimalen Finish." },
-  { n: "02", title: "Aufbereitung", text: "Schäden entfernen, schleifen und die Oberfläche vorbereiten." },
-  { n: "03", title: "Verdichtung", text: "Mehrstufige Hochglanzverdichtung bis zur spiegelnden Chromtiefe." },
-  { n: "04", title: "Versiegelung", text: "Keramischer Langzeitschutz für dauerhaften Glanz." },
-];
 
 export default function HomePage() {
   return (
@@ -49,35 +42,8 @@ export default function HomePage() {
         </Container>
       </section>
 
-      {/* Prozess */}
-      <section className="relative overflow-hidden border-y border-white/10 bg-ink-900/40 py-24">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(225,29,42,0.08),transparent_40%)]" />
-        <Container className="relative">
-          <SectionHeading
-            eyebrow="Der Chromwerk-Prozess"
-            title="In vier Schritten zum Spiegelglanz"
-            align="center"
-            className="mb-16"
-          />
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-            {processSteps.map((step, i) => (
-              <Reveal key={step.n} index={i}>
-                <div className="relative h-full rounded-2xl border border-white/10 bg-ink-800/50 p-7">
-                  <span className="font-display text-5xl font-bold text-transparent bg-chrome-text bg-clip-text opacity-40">
-                    {step.n}
-                  </span>
-                  <h3 className="mt-4 font-display text-lg font-semibold uppercase tracking-wide text-chrome-100">
-                    {step.title}
-                  </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-chrome-400">
-                    {step.text}
-                  </p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </Container>
-      </section>
+      {/* Prozess – Sticky Scroll-Storytelling (Szene 6) */}
+      <ProcessStory />
 
       {/* Lookbook-Vorschau */}
       <section className="py-24">

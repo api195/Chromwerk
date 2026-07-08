@@ -3,6 +3,7 @@
 import { SmartImage as Image } from "@/components/ui/SmartImage";
 import type { Wheel } from "@/types";
 import { Button } from "@/components/ui/Button";
+import { TiltCard } from "@/components/ui/TiltCard";
 import { useCart } from "@/components/cart/CartProvider";
 import { formatPrice, cn } from "@/lib/utils";
 
@@ -17,7 +18,8 @@ export function WheelCard({ wheel }: { wheel: Wheel }) {
   const soldOut = wheel.availability === "Reserviert";
 
   return (
-    <article className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-ink-800/60 transition-all duration-500 hover:border-chrome-400/40 hover:shadow-chrome">
+    <TiltCard className="h-full">
+    <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-ink-800/60 transition-all duration-500 hover:border-chrome-400/40 hover:shadow-chrome">
       {/* Bild */}
       <div className="relative aspect-[4/3] overflow-hidden bg-ink-900">
         <Image
@@ -106,5 +108,6 @@ export function WheelCard({ wheel }: { wheel: Wheel }) {
         </div>
       </div>
     </article>
+    </TiltCard>
   );
 }

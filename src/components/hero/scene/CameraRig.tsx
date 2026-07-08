@@ -6,38 +6,65 @@ import * as THREE from "three";
 import type { HeroDrivers } from "./types";
 
 /**
- * CameraRig – steuert die Kamera cinematisch aus mehreren Eingaben:
- *  • introRef  (0→1, GSAP): Kamera fährt aus der Nahaufnahme der
- *    spiegelnden Oberfläche langsam zurück und enthüllt die ganze Felge.
- *  • scrollRef (0→1): Kamera fährt beim Scrollen elegant an der Felge
- *    vorbei; Reflexionen verändern sich.
- *  • pointerRef: bewegt primär die Reflexe über das Chrom
- *    (Environment-Rotation), nicht die Felge selbst.
+ * CameraRig – cinematische Kameraführung aus mehreren Eingaben:
+ *  • intro (0→1, GSAP): Kamera fährt aus der Nahaufnahme der spiegelnden
+ *    Oberfläche zurück und enthüllt die ganze Felge (Szene 1–2).
+ *  • scroll (0→1): mehrere Kamera-Beats (Präsentation → Zoom → Morph-
+ *    Ansicht → Ausfahrt), Szene 3–5.
+ *  • pointer: bewegt primär die Reflexe über das Chrom (Environment-
+ *    Rotation), nicht die Felge selbst.
  *
- * Reduzierte Bewegung: Intro/Parallax werden übersprungen (statische Pose).
+ * Reduzierte Bewegung: Intro/Parallax werden übersprungen.
  */
 
-// Kamera-Posen (Position + Blickziel)
 const INTRO_POS = new THREE.Vector3(0.4, -0.12, 2.55);
 const INTRO_TARGET = new THREE.Vector3(0.75, 0.28, 0.55);
-const BASE_POS = new THREE.Vector3(0, 0.1, 7.1);
-const BASE_TARGET = new THREE.Vector3(0, 0, 0);
-const SCROLL_POS = new THREE.Vector3(-2.9, 0.7, 4.5);
-const SCROLL_TARGET = new THREE.Vector3(0.5, -0.15, 0);
+
+// Kamera-Keyframes entlang des Scroll-Fortschritts (Szene 3 → 5)
+type Key = { t: number; pos: THREE.Vector3; target: THREE.Vector3 };
+const KEYS: Key[] = [
+  // Szene 3 – elegante Präsentation
+  { t: 0.0, pos: new THREE.Vector3(0, 0.1, 7.1), target: new THREE.Vector3(0, 0, 0) },
+  // Szene 4 – cinematischer Zoom auf die Chromoberfläche
+  { t: 0.34, pos: new THREE.Vector3(0.55, 0.05, 3.7), target: new THREE.Vector3(0.35, 0.08, 0.2) },
+  // Szene 5 – Beauty-Ansicht für den Vorher/Nachher-Morph
+  { t: 0.56, pos: new THREE.Vector3(-0.1, 0.05, 5.2), target: new THREE.Vector3(0, 0, 0) },
+  { t: 0.8, pos: new THREE.Vector3(-0.1, 0.05, 5.2), target: new THREE.Vector3(0, 0, 0) },
+  // Ausfahrt – Übergabe an den nächsten Abschnitt
+  { t: 1.0, pos: new THREE.Vector3(-2.9, 0.7, 4.6), target: new THREE.Vector3(0.5, -0.15, 0) },
+];
 
 function smoothstep(x: number) {
   const t = Math.max(0, Math.min(1, x));
   return t * t * (3 - 2 * t);
 }
-
-// Frameratenunabhängiges Dämpfen
 function damp(current: number, target: number, lambda: number, dt: number) {
   return THREE.MathUtils.lerp(current, target, 1 - Math.exp(-lambda * dt));
 }
 
+// Interpoliert Position/Ziel entlang der Keyframes
+function sampleKeys(p: number, outPos: THREE.Vector3, outTgt: THREE.Vector3) {
+  if (p <= KEYS[0].t) {
+    outPos.copy(KEYS[0].pos);
+    outTgt.copy(KEYS[0].target);
+    return;
+  }
+  for (let i = 0; i < KEYS.length - 1; i++) {
+    const a = KEYS[i];
+    const b = KEYS[i + 1];
+    if (p >= a.t && p <= b.t) {
+      const k = smoothstep((p - a.t) / (b.t - a.t));
+      outPos.copy(a.pos).lerp(b.pos, k);
+      outTgt.copy(a.target).lerp(b.target, k);
+      return;
+    }
+  }
+  outPos.copy(KEYS[KEYS.length - 1].pos);
+  outTgt.copy(KEYS[KEYS.length - 1].target);
+}
+
 const _pos = new THREE.Vector3();
 const _tgt = new THREE.Vector3();
-const _a = new THREE.Vector3();
 
 export function CameraRig({ drivers }: { drivers: HeroDrivers }) {
   const { camera, scene } = useThree();
@@ -49,28 +76,24 @@ export function CameraRig({ drivers }: { drivers: HeroDrivers }) {
   useFrame((_, delta) => {
     const dt = Math.min(delta, 0.05);
     const introP = drivers.reduced ? 1 : drivers.intro.current;
-    const scrollP = smoothstep(drivers.scroll.current);
+    const scrollP = drivers.scroll.current;
 
-    // Position: intro (nah → basis), dann scroll (basis → vorbei)
-    _pos.copy(INTRO_POS).lerp(BASE_POS, introP);
-    _a.copy(BASE_POS).lerp(SCROLL_POS, scrollP);
-    _pos.lerp(_a, scrollP);
+    // Scroll-Beats
+    sampleKeys(scrollP, _pos, _tgt);
 
-    // Blickziel analog
-    _tgt.copy(INTRO_TARGET).lerp(BASE_TARGET, introP);
-    _a.copy(BASE_TARGET).lerp(SCROLL_TARGET, scrollP);
-    _tgt.lerp(_a, scrollP);
+    // Intro-Blend: aus der Nahaufnahme in die Szene-3-Pose
+    _pos.lerp(INTRO_POS, 1 - introP);
+    _tgt.lerp(INTRO_TARGET, 1 - introP);
 
-    // Sanfter Maus-Parallax (nur nach Intro, dezent)
+    // Sanfter Maus-Parallax (dezent, klingt beim Scrollen aus)
     if (!drivers.reduced) {
-      const infl = introP * (1 - scrollP * 0.6);
+      const infl = introP * (1 - smoothstep(scrollP) * 0.7);
       px.current = damp(px.current, drivers.pointer.current.x, 3, dt);
       py.current = damp(py.current, drivers.pointer.current.y, 3, dt);
-      _pos.x += px.current * 0.28 * infl;
-      _pos.y += -py.current * 0.2 * infl;
+      _pos.x += px.current * 0.26 * infl;
+      _pos.y += -py.current * 0.18 * infl;
     }
 
-    // Kamera weich nachführen
     camera.position.x = damp(camera.position.x, _pos.x, 6, dt);
     camera.position.y = damp(camera.position.y, _pos.y, 6, dt);
     camera.position.z = damp(camera.position.z, _pos.z, 6, dt);
@@ -81,7 +104,7 @@ export function CameraRig({ drivers }: { drivers: HeroDrivers }) {
       envX.current = damp(envX.current, drivers.pointer.current.y * 0.15, 2, dt);
       envY.current = damp(
         envY.current,
-        drivers.pointer.current.x * 0.3 + scrollP * 0.5,
+        drivers.pointer.current.x * 0.3 + smoothstep(scrollP) * 0.4,
         2,
         dt
       );

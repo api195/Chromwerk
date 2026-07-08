@@ -3,6 +3,22 @@
 import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+import type { HeroDrivers } from "./types";
+
+// Materialzustände für den Vorher/Nachher-Morph
+const MATTE = {
+  color: new THREE.Color("#42444a"), // stumpfes, dunkel-oxidiertes Gunmetal
+  roughness: 0.74,
+  metalness: 0.65,
+  env: 0.3,
+};
+const MIRROR = {
+  color: new THREE.Color("#ffffff"), // perfektes Hochglanz-Chrom
+  roughness: 0.02,
+  metalness: 1,
+  env: 2.6,
+};
+const _col = new THREE.Color();
 
 /**
  * ChromeRim – fotorealistische Chromfelge (prozedural, PBR).
@@ -49,7 +65,13 @@ function makeRimProfile() {
   ];
 }
 
-export function ChromeRim({ animate = true }: { animate?: boolean }) {
+export function ChromeRim({
+  animate = true,
+  drivers,
+}: {
+  animate?: boolean;
+  drivers?: HeroDrivers;
+}) {
   const tilt = useRef<THREE.Group>(null); // statische 3/4-Neigung + Schweben
   const spin = useRef<THREE.Group>(null); // langsame Eigenrotation
 
@@ -140,6 +162,18 @@ export function ChromeRim({ animate = true }: { animate?: boolean }) {
     }
     if (spin.current && animate) {
       spin.current.rotation.z = t * 0.045; // sehr langsam & elegant
+    }
+
+    // Vorher/Nachher-Morph: Material zwischen matt und Hochglanz überblenden
+    if (drivers) {
+      const m = drivers.morph.current;
+      chrome.roughness = THREE.MathUtils.lerp(MATTE.roughness, MIRROR.roughness, m);
+      chrome.metalness = THREE.MathUtils.lerp(MATTE.metalness, MIRROR.metalness, m);
+      chrome.envMapIntensity = THREE.MathUtils.lerp(MATTE.env, MIRROR.env, m);
+      chrome.color.copy(_col.copy(MATTE.color).lerp(MIRROR.color, m));
+      // Nabe/Cap folgt dezent mit
+      chromeSoft.roughness = THREE.MathUtils.lerp(0.5, 0.12, m);
+      chromeSoft.envMapIntensity = THREE.MathUtils.lerp(0.5, 2.0, m);
     }
   });
 

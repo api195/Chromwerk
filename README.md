@@ -110,6 +110,21 @@ Die Hero-Section liegt in `src/components/hero/`:
 - `scene/Effects.tsx` — Post-Processing (Bloom, AO, DoF, Vignette), adaptiv.
 - `scene/HeroCanvas.tsx` / `CameraRig.tsx` — Bühne & Kameraführung.
 
+Die Hero ist als **scroll-getriebener Kurzfilm** aufgebaut (sticky Canvas,
+`h-[340vh]`): Intro-Reveal → Zoom → **Vorher/Nachher-Morph** (dieselbe Felge
+morpht matt→Chrom, während ein Lichtstrich darüberzieht) mit weich
+überblendenden Szenen-Untertiteln. Gesteuert über `scene/types.ts`
+(`morph`, `sweep`) und `scene/SweepLight.tsx`.
+
+Danach folgt **`sections/ProcessStory.tsx`** – Sticky Scroll-Storytelling
+durch die 7 Prozessschritte (Felgenannahme → … → Ergebnis) mit
+Chrom-Fortschrittslinie.
+
+**Motion-Primitive** (wiederverwendbar):
+- `ui/MagneticButton.tsx` – magnetischer Hover
+- `ui/TiltCard.tsx` – 3D-Tilt + wandernder Licht-Glanz (auf allen Karten)
+- `ui/Reveal.tsx` – Scroll-Reveals mit Varianten (`up`/`fade`/`blur`/`scale`)
+
 **Performance:** Auf mobilen/schwächeren Geräten (`useDeviceTier`) wird
 automatisch eine reduzierte Variante geladen (weniger Partikel, leichteres
 Post-Processing). `prefers-reduced-motion` überspringt Intro & Animationen.

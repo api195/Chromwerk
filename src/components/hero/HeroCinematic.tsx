@@ -7,10 +7,11 @@ import {
   useMotionValueEvent,
   useScroll,
   useTransform,
+  type MotionValue,
   type Variants,
 } from "framer-motion";
 import gsap from "gsap";
-import { Button } from "@/components/ui/Button";
+import { MagneticButton } from "@/components/ui/MagneticButton";
 import { KoelnSkyline } from "./KoelnSkyline";
 import { site } from "@/data/site";
 import { useDeviceTier, isWebGLAvailable } from "@/lib/useDeviceTier";
@@ -36,6 +37,43 @@ const itemVariants: Variants = {
   },
 };
 
+// Hilfsfunktionen
+function clamp01(x: number) {
+  return Math.max(0, Math.min(1, x));
+}
+function mapRange(v: number, a: number, b: number, c: number, d: number) {
+  return c + (clamp01((v - a) / (b - a))) * (d - c);
+}
+
+/** Cinematischer Szenen-Untertitel (Lower-Third, blendet über Scroll ein/aus). */
+function Caption({
+  opacity,
+  y,
+  title,
+  sub,
+}: {
+  opacity: MotionValue<number>;
+  y: MotionValue<number>;
+  title: string;
+  sub?: string;
+}) {
+  return (
+    <motion.div
+      style={{ opacity, y }}
+      className="pointer-events-none absolute inset-x-0 bottom-[16%] z-40 flex flex-col items-center px-6 text-center"
+    >
+      <p className="font-display text-2xl font-semibold uppercase tracking-wide text-transparent bg-chrome-text bg-clip-text sm:text-3xl lg:text-4xl">
+        {title}
+      </p>
+      {sub && (
+        <p className="mt-3 max-w-md text-xs leading-relaxed text-chrome-400 sm:text-sm">
+          {sub}
+        </p>
+      )}
+    </motion.div>
+  );
+}
+
 export function HeroCinematic() {
   const device = useDeviceTier();
 
@@ -44,6 +82,8 @@ export function HeroCinematic() {
     intro: { current: 0 },
     scroll: { current: 0 },
     pointer: { current: { x: 0, y: 0 } },
+    morph: { current: 1 },
+    sweep: { current: 0 },
     reduced: device.reduced,
   });
 
@@ -59,19 +99,40 @@ export function HeroCinematic() {
     target: trackRef,
     offset: ["start start", "end end"],
   });
+
   useMotionValueEvent(scrollYProgress, "change", (v) => {
     drivers.current.scroll.current = v;
+    // Vorher/Nachher-Morph: Chrom → kurz matt → poliert → Chrom
+    let morph: number;
+    if (v < 0.44) morph = 1;
+    else if (v < 0.52) morph = mapRange(v, 0.44, 0.52, 1, 0.08);
+    else if (v < 0.8) morph = mapRange(v, 0.52, 0.8, 0.08, 1);
+    else morph = 1;
+    drivers.current.morph.current = morph;
+    // Licht-Sweep nur während der Politur-Phase
+    drivers.current.sweep.current =
+      v > 0.52 && v < 0.8 ? mapRange(v, 0.52, 0.8, 0, 1) : v >= 0.8 ? 1 : 0;
   });
-  // Inhalt beim Scrollen elegant ausblenden
-  const contentOpacity = useTransform(scrollYProgress, [0, 0.32], [1, 0]);
-  const contentY = useTransform(scrollYProgress, [0, 0.32], [0, -60]);
+
+  // Szene 3 (Wortmarke) blendet früh aus
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.12], [1, 0]);
+  const heroY = useTransform(scrollYProgress, [0, 0.12], [0, -60]);
+
+  // Szene 4 – Zoom-Caption
+  const capA = useTransform(scrollYProgress, [0.16, 0.24, 0.38, 0.44], [0, 1, 1, 0]);
+  const capAy = useTransform(scrollYProgress, [0.16, 0.44], [30, -20]);
+  // Szene 5 – Vorher
+  const capB = useTransform(scrollYProgress, [0.45, 0.5, 0.54, 0.58], [0, 1, 1, 0]);
+  const capBy = useTransform(scrollYProgress, [0.45, 0.58], [30, -10]);
+  // Szene 5 – Politur / Nachher
+  const capC = useTransform(scrollYProgress, [0.6, 0.68, 0.82, 0.9], [0, 1, 1, 0]);
+  const capCy = useTransform(scrollYProgress, [0.6, 0.9], [30, -20]);
 
   useEffect(() => {
     setMounted(true);
     const hasWebGL = isWebGLAvailable();
     setWebgl(hasWebGL);
 
-    // URL-Parameter (für Screenshots/Debug): ?still=1 überspringt das Intro
     const params =
       typeof window !== "undefined"
         ? new URLSearchParams(window.location.search)
@@ -93,7 +154,6 @@ export function HeroCinematic() {
       } catch {
         /* ignore */
       }
-      // Navigation darf jetzt erscheinen
       window.dispatchEvent(new Event("chromwerk:hero-ready"));
     };
 
@@ -139,10 +199,10 @@ export function HeroCinematic() {
   }, [device.tier, device.reduced]);
 
   return (
-    <section ref={trackRef} className="relative h-[200vh] w-full bg-ink-950">
-      {/* Gepinnter Viewport */}
+    // Lange Kino-Strecke (sticky Canvas) für die Szenen 3–5
+    <section ref={trackRef} className="relative h-[340vh] w-full bg-ink-950">
       <div className="sticky top-0 h-[100svh] w-full overflow-hidden">
-        {/* Statischer Premium-Fallback (Poster) hinter der Szene */}
+        {/* Poster / Fallback-Hintergrund */}
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_70%_45%,#15151a_0%,#050506_58%)]" />
           <KoelnSkyline className="absolute bottom-16 left-1/2 h-auto w-[130%] -translate-x-1/2 text-chrome-600/[0.07]" />
@@ -166,12 +226,12 @@ export function HeroCinematic() {
           style={{ opacity: phase === "ready" ? 0 : 1 }}
         />
 
-        {/* Scrim für Textlesbarkeit: mobil von unten, Desktop von links */}
+        {/* Scrim für Textlesbarkeit */}
         <div className="pointer-events-none absolute inset-0 z-20 bg-gradient-to-t from-ink-950 via-ink-950/30 to-transparent lg:bg-gradient-to-r lg:from-ink-950 lg:via-ink-950/70 lg:to-transparent" />
 
-        {/* Inhalt (erscheint nach dem Intro, blendet beim Scrollen aus) */}
+        {/* Szene 3 – Wortmarke + CTAs */}
         <motion.div
-          style={{ opacity: contentOpacity, y: contentY }}
+          style={{ opacity: heroOpacity, y: heroY }}
           className="absolute inset-0 z-40 flex items-end justify-center px-6 pb-20 sm:pb-24 lg:items-center lg:justify-start lg:px-14 lg:pb-0 xl:px-20"
         >
           <motion.div
@@ -188,7 +248,6 @@ export function HeroCinematic() {
               {site.tagline} · {site.city}
             </motion.p>
 
-            {/* Wortmarke (Logo im Fokus) */}
             <motion.h1
               variants={itemVariants}
               className="font-display text-6xl font-bold uppercase leading-[0.85] tracking-tight sm:text-7xl lg:text-8xl xl:text-9xl"
@@ -212,22 +271,42 @@ export function HeroCinematic() {
               variants={itemVariants}
               className="mt-8 flex flex-wrap items-center justify-center gap-4 lg:justify-start"
             >
-              <Button href="/termin" variant="primary" size="lg">
+              <MagneticButton href="/termin" variant="primary" size="lg">
                 Termin buchen
-              </Button>
-              <Button href="/lookbook" variant="chrome" size="lg">
+              </MagneticButton>
+              <MagneticButton href="/lookbook" variant="chrome" size="lg">
                 Ergebnisse ansehen
-              </Button>
+              </MagneticButton>
             </motion.div>
           </motion.div>
         </motion.div>
 
-        {/* Scroll-Indikator */}
+        {/* Szenen-Untertitel (Szene 4 & 5) */}
+        <Caption
+          opacity={capA}
+          y={capAy}
+          title="Die Reflexion ist das Produkt"
+          sub="Eine hochglanzverdichtete Oberfläche spiegelt ihre Umgebung wie ein Chromspiegel."
+        />
+        <Caption
+          opacity={capB}
+          y={capBy}
+          title="Vorher"
+          sub="Matt, oxidiert, verkratzt – so kommen viele Felgen zu uns."
+        />
+        <Caption
+          opacity={capC}
+          y={capCy}
+          title="Hochglanzverdichtung"
+          sub="Ein Lichtstrich fährt über die Oberfläche – und dieselbe Felge wird zum Spiegel."
+        />
+
+        {/* Scroll-Indikator (nur Szene 3) */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: phase === "ready" ? 1 : 0 }}
           transition={{ duration: 1, delay: 0.4 }}
-          style={{ opacity: contentOpacity }}
+          style={{ opacity: heroOpacity }}
           className="absolute bottom-8 left-1/2 z-40 hidden -translate-x-1/2 flex-col items-center gap-2 lg:flex"
         >
           <span className="text-[10px] uppercase tracking-widest2 text-chrome-500">
