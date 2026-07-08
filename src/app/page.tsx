@@ -2,15 +2,15 @@ import Link from "next/link";
 import { HeroCinematic } from "@/components/hero/HeroCinematic";
 import { Stats } from "@/components/sections/Stats";
 import { ProcessStory } from "@/components/sections/ProcessStory";
+import { CinematicStatement } from "@/components/sections/CinematicStatement";
+import { LookbookMarquee } from "@/components/sections/LookbookMarquee";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
 import { Button } from "@/components/ui/Button";
 import { ServiceCard } from "@/components/cards/ServiceCard";
-import { LookbookCard } from "@/components/cards/LookbookCard";
 import { ProductCard } from "@/components/cards/ProductCard";
 import { services } from "@/data/services";
-import { lookbookProjects } from "@/data/lookbook";
 import { products } from "@/data/products";
 
 export default function HomePage() {
@@ -18,6 +18,16 @@ export default function HomePage() {
     <>
       <HeroCinematic />
       <Stats />
+
+      {/* Cinematic Statement (Beat) */}
+      <CinematicStatement
+        eyebrow="Hochglanzverdichtung · Köln"
+        line1="Mehr als eine Felge."
+        line2="Ein Spiegel."
+        accent="iridescent"
+        sub="Wir verdichten Oberflächen bis sie ihre Umgebung reflektieren – tief, brillant, dauerhaft."
+        hint="Weiter scrollen"
+      />
 
       {/* Leistungen-Vorschau */}
       <section className="py-24">
@@ -45,28 +55,8 @@ export default function HomePage() {
       {/* Prozess – Sticky Scroll-Storytelling (Szene 6) */}
       <ProcessStory />
 
-      {/* Lookbook-Vorschau */}
-      <section className="py-24">
-        <Container>
-          <div className="mb-14 flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
-            <SectionHeading
-              eyebrow="Lookbook"
-              title="Vorher / Nachher"
-              description="Echte Ergebnisse aus unserer Werkstatt. Ziehe im Detail den Vergleichsregler."
-            />
-            <Reveal>
-              <Button href="/lookbook" variant="outline" size="md">
-                Zum Lookbook
-              </Button>
-            </Reveal>
-          </div>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {lookbookProjects.slice(0, 3).map((p) => (
-              <LookbookCard key={p.slug} project={p} />
-            ))}
-          </div>
-        </Container>
-      </section>
+      {/* Lookbook – editoriale, horizontale Galerie */}
+      <LookbookMarquee />
 
       {/* Pflegeprodukte-Vorschau */}
       <section className="border-y border-white/10 bg-ink-900/40 py-24">
@@ -90,6 +80,15 @@ export default function HomePage() {
           </div>
         </Container>
       </section>
+
+      {/* Cinematic Statement (Beat) */}
+      <CinematicStatement
+        eyebrow="Handwerk aus Köln"
+        line1="Präzision, die man"
+        line2="sehen kann."
+        accent="chrome"
+        sub="Jede Felge durchläuft denselben kompromisslosen Prozess – bis zum perfekten Spiegel."
+      />
 
       {/* CTA */}
       <section className="py-24">

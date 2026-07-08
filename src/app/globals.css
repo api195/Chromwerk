@@ -74,6 +74,69 @@
   }
 }
 
+/* ------------------------------------------------------------------ */
+/* Cinematic Type-Treatments (animierter Chrom-Shine & Iridescent)     */
+/* ------------------------------------------------------------------ */
+
+/* Wandernder Chrom-Glanz über großem Text */
+@keyframes chromeShine {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.text-chrome-animate {
+  background-image: linear-gradient(
+    100deg,
+    #6b7280 0%,
+    #e7e9ee 18%,
+    #ffffff 30%,
+    #e7e9ee 42%,
+    #9aa0ab 55%,
+    #ffffff 70%,
+    #b9bec8 84%,
+    #6b7280 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: chromeShine 7s linear infinite;
+}
+
+/* Dezente, ölschimmer-artige Iridescent-Sheen (Chrom trifft Spektrum) */
+@keyframes iridescentMove {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+.text-iridescent {
+  background-image: linear-gradient(
+    100deg,
+    #cfd3da,
+    #8ab4ff,
+    #cfa8ff,
+    #ff9ec7,
+    #ffd39a,
+    #9affd0,
+    #cfd3da
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: iridescentMove 9s linear infinite;
+}
+
+/* Weicher Lichtschein hinter großen Statements */
+.glow-crimson {
+  filter: drop-shadow(0 0 40px rgba(225, 29, 42, 0.25));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .text-chrome-animate,
+  .text-iridescent {
+    animation: none;
+  }
+}
+
 /* Lenis Smooth-Scroll */
 html.lenis,
 html.lenis body {
