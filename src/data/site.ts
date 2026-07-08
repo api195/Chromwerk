@@ -35,6 +35,16 @@ export const site = {
   ] as const,
   // Für SEO / Metadaten – später auf echte Domain setzen
   url: "https://chromwerk.de",
+
+  /**
+   * Hero-Felge (Startseite, Foto-Hero).
+   * ----------------------------------------------------------------
+   * DEIN ECHTES FOTO EINSETZEN:
+   * 1. Lege dein Bild ab: public/images/wheels/chromwerk-hero.jpg
+   * 2. Setze hier den Pfad auf ".jpg".
+   * Aktuell zeigt es einen Platzhalter (.svg).
+   */
+  heroImage: "/images/wheels/chromwerk-hero.svg",
 };
 
 export type NavItem = { label: string; href: string };

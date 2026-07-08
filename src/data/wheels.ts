@@ -1,4 +1,8 @@
 import type { Wheel } from "@/types";
+import { site } from "@/data/site";
+
+// Bis echte Produktfotos vorliegen, zeigen ausgewählte Felgen die Hero-Felge.
+const HERO = site.heroImage;
 
 /**
  * Felgen-Shop – Dummy-Daten.
@@ -18,7 +22,7 @@ export const wheels: Wheel[] = [
     price: 2490,
     unit: "Satz (4 Stk.)",
     availability: "Verfügbar",
-    image: "/images/wheels/wheel-placeholder.svg",
+    image: HERO,
     tags: ["Y-Speiche", "Audi", "VW"],
   },
   {
@@ -60,7 +64,7 @@ export const wheels: Wheel[] = [
     price: 3290,
     unit: "Satz (4 Stk.)",
     availability: "Verfügbar",
-    image: "/images/wheels/wheel-placeholder.svg",
+    image: HERO,
     tags: ["Concave", "Audi", "Porsche"],
   },
   {

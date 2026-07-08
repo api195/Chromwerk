@@ -1,4 +1,8 @@
 import type { LookbookProject } from "@/types";
+import { site } from "@/data/site";
+
+// Bis echte Projektfotos vorliegen, nutzt das erste Projekt die Hero-Felge.
+const HERO = site.heroImage;
 
 /**
  * Lookbook / Ergebnisse – Vorher-/Nachher-Projekte.
@@ -26,11 +30,8 @@ export const lookbookProjects: LookbookProject[] = [
       "/images/lookbook/before-placeholder.svg",
       "/images/lookbook/before-placeholder.svg",
     ],
-    afterImages: [
-      "/images/lookbook/after-placeholder.svg",
-      "/images/lookbook/after-placeholder.svg",
-    ],
-    coverImage: "/images/lookbook/cover-placeholder.svg",
+    afterImages: [HERO, "/images/lookbook/after-placeholder.svg"],
+    coverImage: HERO,
     steps: [
       { title: "Zustandsanalyse", text: "Vermessung, Rissprüfung und Dokumentation aller Schäden." },
       { title: "Reparatur", text: "Bordsteinschäden aufgefüllt und plan geschliffen." },

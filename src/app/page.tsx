@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { HeroCinematic } from "@/components/hero/HeroCinematic";
+import { HeroPhoto } from "@/components/hero/HeroPhoto";
 import { Stats } from "@/components/sections/Stats";
 import { ProcessStory } from "@/components/sections/ProcessStory";
 import { CinematicStatement } from "@/components/sections/CinematicStatement";
@@ -16,7 +16,7 @@ import { products } from "@/data/products";
 export default function HomePage() {
   return (
     <>
-      <HeroCinematic />
+      <HeroPhoto />
       <Stats />
 
       {/* Cinematic Statement (Beat) */}

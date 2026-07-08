@@ -96,7 +96,22 @@ Platzhalter liegen in `public/images/`:
 
 Einfach durch echte Dateien ersetzen und die Pfade in den `data/`-Dateien anpassen.
 
-### 🛞 Cinematische 3D-Hero
+### 🛞 Hero-Felge (Foto)
+Die Startseite nutzt eine **Foto-Hero** (`components/hero/HeroPhoto.tsx`):
+echtes Felgenfoto mit Intro, Maus-Parallax, Scroll-Zoom, Vorher/Nachher-Wipe
+(matt → Chrom) und Licht-Sweep.
+
+**Dein Foto einsetzen:**
+1. Lege dein Bild ab: `public/images/wheels/chromwerk-hero.jpg`
+2. Setze in `src/data/site.ts` `heroImage` auf diesen `.jpg`-Pfad.
+Aktuell ist ein SVG-Platzhalter hinterlegt. Ausgewählte Shop- und
+Lookbook-Einträge verweisen ebenfalls auf `site.heroImage`.
+
+Die frühere **3D-Hero** bleibt als Alternative erhalten
+(`components/hero/HeroCinematic.tsx` – in `app/page.tsx` einfach
+`HeroPhoto` gegen `HeroCinematic` tauschen).
+
+### 🛞 Cinematische 3D-Hero (Alternative)
 Die Hero-Section liegt in `src/components/hero/`:
 
 - `HeroCinematic.tsx` — Regie: schwarzes Intro → Reflexion → Enthüllung →
