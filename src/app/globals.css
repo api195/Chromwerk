@@ -130,9 +130,28 @@
   filter: drop-shadow(0 0 40px rgba(225, 29, 42, 0.25));
 }
 
+/* Endlos-Lauftext (Marquee) */
+@keyframes marqueeLeft {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@keyframes marqueeRight {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+.marquee-track {
+  display: inline-flex;
+  white-space: nowrap;
+  will-change: transform;
+}
+.marquee-left { animation: marqueeLeft var(--marquee-duration, 32s) linear infinite; }
+.marquee-right { animation: marqueeRight var(--marquee-duration, 32s) linear infinite; }
+
 @media (prefers-reduced-motion: reduce) {
   .text-chrome-animate,
-  .text-iridescent {
+  .text-iridescent,
+  .marquee-left,
+  .marquee-right {
     animation: none;
   }
 }

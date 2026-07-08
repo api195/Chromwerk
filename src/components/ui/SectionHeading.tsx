@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { Reveal } from "./Reveal";
+import { SplitReveal } from "./SplitReveal";
 
 /**
  * Einheitliche Sektions-Überschrift mit Eyebrow-Label, Chrom-Titel
@@ -34,11 +35,9 @@ export function SectionHeading({
           </span>
         </Reveal>
       )}
-      <Reveal index={1}>
-        <h2 className="mt-4 font-display text-3xl font-semibold uppercase leading-tight tracking-tight text-transparent bg-chrome-text bg-clip-text sm:text-4xl lg:text-5xl">
-          {title}
-        </h2>
-      </Reveal>
+      <h2 className="mt-4 font-display text-3xl font-semibold uppercase leading-tight tracking-tight text-transparent bg-chrome-text bg-clip-text sm:text-4xl lg:text-5xl">
+        <SplitReveal text={title} />
+      </h2>
       {description && (
         <Reveal index={2}>
           <p className="mt-5 text-base leading-relaxed text-chrome-300">

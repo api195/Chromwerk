@@ -64,9 +64,17 @@ function ServiceIcon({ icon }: { icon: Service["icon"] }) {
   }
 }
 
-export function ServiceCard({ service, index = 0 }: { service: Service; index?: number }) {
+export function ServiceCard({
+  service,
+  index = 0,
+  variant = "up",
+}: {
+  service: Service;
+  index?: number;
+  variant?: "up" | "fade" | "blur" | "scale";
+}) {
   return (
-    <Reveal index={index} as="article">
+    <Reveal index={index} as="article" variant={variant}>
       <div className="group relative h-full overflow-hidden rounded-2xl border border-white/10 bg-ink-800/60 p-7 transition-all duration-500 hover:border-chrome-400/40 hover:bg-ink-700/60">
         {/* Glanz-Sweep beim Hover */}
         <div className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/5 to-transparent transition-transform duration-700 group-hover:translate-x-full" />

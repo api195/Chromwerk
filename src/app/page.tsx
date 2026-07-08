@@ -3,20 +3,37 @@ import { HeroPhoto } from "@/components/hero/HeroPhoto";
 import { Stats } from "@/components/sections/Stats";
 import { ProcessStory } from "@/components/sections/ProcessStory";
 import { CinematicStatement } from "@/components/sections/CinematicStatement";
-import { LookbookMarquee } from "@/components/sections/LookbookMarquee";
+import { LookbookScroller } from "@/components/sections/LookbookScroller";
+import { Marquee } from "@/components/sections/Marquee";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
+import { Parallax } from "@/components/ui/Parallax";
 import { Button } from "@/components/ui/Button";
+import { MagneticButton } from "@/components/ui/MagneticButton";
+import { SplitReveal } from "@/components/ui/SplitReveal";
 import { ServiceCard } from "@/components/cards/ServiceCard";
 import { ProductCard } from "@/components/cards/ProductCard";
 import { services } from "@/data/services";
 import { products } from "@/data/products";
 
+const marqueeWords = [
+  "Hochglanzverdichtung",
+  "Chrom",
+  "Köln",
+  "Präzision",
+  "Spiegelglanz",
+  "Handwerk",
+];
+
 export default function HomePage() {
   return (
     <>
       <HeroPhoto />
+
+      {/* Lauftext – ständige Bewegung */}
+      <Marquee items={marqueeWords} direction="left" duration={34} accent />
+
       <Stats />
 
       {/* Cinematic Statement (Beat) */}
@@ -29,7 +46,7 @@ export default function HomePage() {
         hint="Weiter scrollen"
       />
 
-      {/* Leistungen-Vorschau */}
+      {/* Leistungen */}
       <section className="py-24">
         <Container>
           <div className="mb-14 flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
@@ -38,7 +55,7 @@ export default function HomePage() {
               title="Veredelung auf Meisterniveau"
               description="Von der Aufbereitung bis zur Hochglanzverdichtung – alles aus einer Hand in Köln."
             />
-            <Reveal>
+            <Reveal variant="fade">
               <Button href="/leistungen" variant="outline" size="md">
                 Alle Leistungen
               </Button>
@@ -46,19 +63,22 @@ export default function HomePage() {
           </div>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {services.slice(0, 6).map((s, i) => (
-              <ServiceCard key={s.slug} service={s} index={i % 3} />
+              <ServiceCard key={s.slug} service={s} index={i % 3} variant="blur" />
             ))}
           </div>
         </Container>
       </section>
 
-      {/* Prozess – Sticky Scroll-Storytelling (Szene 6) */}
+      {/* Prozess – Sticky Scroll-Storytelling */}
       <ProcessStory />
 
-      {/* Lookbook – editoriale, horizontale Galerie */}
-      <LookbookMarquee />
+      {/* Lookbook – gepinnte, horizontal scrollende Galerie */}
+      <LookbookScroller />
 
-      {/* Pflegeprodukte-Vorschau */}
+      {/* Lauftext (Gegenrichtung) */}
+      <Marquee items={marqueeWords} direction="right" duration={38} />
+
+      {/* Pflegeprodukte */}
       <section className="border-y border-white/10 bg-ink-900/40 py-24">
         <Container>
           <div className="mb-14 flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
@@ -67,15 +87,17 @@ export default function HomePage() {
               title="Chromwerk Private Label"
               description="Eigene Pflegeprodukte, entwickelt für Chrom- und hochglanzverdichtete Oberflächen."
             />
-            <Reveal>
+            <Reveal variant="fade">
               <Button href="/pflegeprodukte" variant="outline" size="md">
                 Zum Shop
               </Button>
             </Reveal>
           </div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {products.map((p) => (
-              <ProductCard key={p.id} product={p} />
+            {products.map((p, i) => (
+              <Reveal key={p.id} index={i} variant="scale">
+                <ProductCard product={p} />
+              </Reveal>
             ))}
           </div>
         </Container>
@@ -93,21 +115,24 @@ export default function HomePage() {
       {/* CTA */}
       <section className="py-24">
         <Container>
-          <Reveal>
+          <Reveal variant="scale">
             <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-ink-800 to-ink-950 p-10 text-center sm:p-16">
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(225,29,42,0.14),transparent_60%)]" />
+              <Parallax speed={30} className="pointer-events-none absolute inset-0">
+                <div className="absolute inset-x-0 top-0 h-px bg-chrome-line" />
+              </Parallax>
               <div className="relative">
-                <h2 className="mx-auto max-w-2xl font-display text-3xl font-bold uppercase leading-tight tracking-tight text-transparent bg-chrome-text bg-clip-text sm:text-4xl lg:text-5xl">
-                  Bereit für echten Spiegelglanz?
+                <h2 className="mx-auto max-w-3xl font-display text-3xl font-bold uppercase leading-tight tracking-tight text-transparent bg-chrome-text bg-clip-text sm:text-4xl lg:text-6xl">
+                  <SplitReveal text="Bereit für echten Spiegelglanz?" />
                 </h2>
                 <p className="mx-auto mt-5 max-w-xl text-base text-chrome-300">
                   Sichere dir deinen Termin für die Hochglanzverdichtung deiner
                   Felgen – oder lass uns deine gebrauchten Felgen bewerten.
                 </p>
                 <div className="mt-8 flex flex-wrap justify-center gap-4">
-                  <Button href="/termin" variant="primary" size="lg">
+                  <MagneticButton href="/termin" variant="primary" size="lg">
                     Termin buchen
-                  </Button>
+                  </MagneticButton>
                   <Link
                     href="/kontakt"
                     className="inline-flex items-center gap-2 text-sm font-medium uppercase tracking-widest text-chrome-200 transition hover:text-white"
