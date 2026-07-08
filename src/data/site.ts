@@ -41,7 +41,7 @@ export const site = {
    * Austauschen: neue Datei unter public/images/wheels/ ablegen und den
    * Pfad hier anpassen.
    */
-  heroImage: "/images/wheels/chromwerk-hero.webp",
+  heroImage: "/images/wheels/chromwerk-hero.png",
 };
 
 export type NavItem = { label: string; href: string };
