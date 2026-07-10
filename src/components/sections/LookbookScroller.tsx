@@ -53,7 +53,7 @@ export function LookbookScroller() {
     <section
       ref={section}
       id="lookbook"
-      className="relative overflow-hidden bg-ink-950"
+      className="relative overflow-hidden bg-transparent"
     >
       <div
         className={

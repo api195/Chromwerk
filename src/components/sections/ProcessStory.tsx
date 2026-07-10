@@ -67,7 +67,7 @@ export function ProcessStory() {
     <section
       ref={ref}
       id="prozess"
-      className="relative bg-ink-950"
+      className="relative bg-ink-950/65 backdrop-blur-sm"
       style={{ height: `${steps.length * 62}vh` }}
     >
       <div className="sticky top-0 flex h-[100svh] items-center overflow-hidden">

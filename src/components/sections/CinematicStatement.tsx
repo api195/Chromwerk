@@ -55,7 +55,7 @@ export function CinematicStatement({
   return (
     <section
       className={cn(
-        "relative flex min-h-[100svh] items-center justify-center overflow-hidden bg-ink-950 px-6 py-24",
+        "relative flex min-h-[100svh] items-center justify-center overflow-hidden bg-ink-950/50 px-6 py-24 backdrop-blur-sm",
         className
       )}
     >

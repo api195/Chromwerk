@@ -46,7 +46,7 @@ export function Marquee({
   return (
     <div
       className={cn(
-        "relative w-full overflow-hidden border-y border-white/10 bg-ink-950 py-6",
+        "relative w-full overflow-hidden border-y border-white/10 bg-ink-950/70 py-6 backdrop-blur-sm",
         className
       )}
     >

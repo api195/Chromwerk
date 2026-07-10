@@ -50,7 +50,7 @@ export function Stats() {
   }, []);
 
   return (
-    <section className="border-y border-white/10 bg-ink-900/60 py-16" ref={rootRef}>
+    <section className="border-y border-white/10 bg-ink-950/55 py-16 backdrop-blur-sm" ref={rootRef}>
       <Container>
         <div className="grid grid-cols-2 gap-8 lg:grid-cols-4">
           {stats.map((s) => (

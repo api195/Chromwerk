@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { HeroPhoto } from "@/components/hero/HeroPhoto";
+import { WheelBackground } from "@/components/hero/WheelBackground";
+import { HeroWheel } from "@/components/hero/HeroWheel";
 import { Stats } from "@/components/sections/Stats";
 import { ProcessStory } from "@/components/sections/ProcessStory";
 import { CinematicStatement } from "@/components/sections/CinematicStatement";
@@ -29,7 +30,12 @@ const marqueeWords = [
 export default function HomePage() {
   return (
     <>
-      <HeroPhoto />
+      {/* Tumbelnde 3D-Chromfelge als fixierter Hintergrund über die ganze Seite */}
+      <WheelBackground />
+
+      {/* Inhalt scrollt über dem Hintergrund (z-10) */}
+      <div className="relative z-10">
+      <HeroWheel />
 
       {/* Lauftext – ständige Bewegung */}
       <Marquee items={marqueeWords} direction="left" duration={34} accent />
@@ -148,6 +154,7 @@ export default function HomePage() {
           </Reveal>
         </Container>
       </section>
+      </div>
     </>
   );
 }
