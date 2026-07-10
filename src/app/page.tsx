@@ -5,7 +5,6 @@ import { Stats } from "@/components/sections/Stats";
 import { ProcessStory } from "@/components/sections/ProcessStory";
 import { CinematicStatement } from "@/components/sections/CinematicStatement";
 import { LookbookScroller } from "@/components/sections/LookbookScroller";
-import { Marquee } from "@/components/sections/Marquee";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
@@ -18,15 +17,6 @@ import { ProductCard } from "@/components/cards/ProductCard";
 import { services } from "@/data/services";
 import { products } from "@/data/products";
 
-const marqueeWords = [
-  "Hochglanzverdichtung",
-  "Chrom",
-  "Köln",
-  "Präzision",
-  "Spiegelglanz",
-  "Handwerk",
-];
-
 export default function HomePage() {
   return (
     <>
@@ -36,9 +26,6 @@ export default function HomePage() {
       {/* Inhalt scrollt über dem Hintergrund (z-10) */}
       <div className="relative z-10">
       <HeroWheel />
-
-      {/* Lauftext – ständige Bewegung */}
-      <Marquee items={marqueeWords} direction="left" duration={34} accent />
 
       <Stats />
 
@@ -80,9 +67,6 @@ export default function HomePage() {
 
       {/* Lookbook – gepinnte, horizontal scrollende Galerie */}
       <LookbookScroller />
-
-      {/* Lauftext (Gegenrichtung) */}
-      <Marquee items={marqueeWords} direction="right" duration={38} />
 
       {/* Pflegeprodukte */}
       <section className="border-y border-white/10 bg-ink-900/40 py-24">
