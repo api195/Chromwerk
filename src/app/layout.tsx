@@ -72,6 +72,14 @@ export default function RootLayout({
   return (
     <html lang="de" className={`${display.variable} ${sans.variable}`}>
       <body className="font-sans">
+        {/* Frühzeitiger Preload des 3D-Felgenmodells (nur Desktop-Geräte,
+            auf denen der 3D-Hintergrund tatsächlich rendert). Startet den
+            Download bereits beim HTML-Parsen statt erst nach der Hydration. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{if(matchMedia('(min-width:1024px) and (pointer:fine)').matches&&(navigator.hardwareConcurrency||8)>4){var l=document.createElement('link');l.rel='preload';l.as='fetch';l.href='/chrom_felge.glb';l.crossOrigin='anonymous';document.head.appendChild(l);}}catch(e){}`,
+          }}
+        />
         <CartProvider>
           <SmoothScroll>
             <Navbar />

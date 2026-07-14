@@ -111,6 +111,21 @@ Die frühere **3D-Hero** bleibt als Alternative erhalten
 (`components/hero/HeroCinematic.tsx` – in `app/page.tsx` einfach
 `HeroPhoto` gegen `HeroCinematic` tauschen).
 
+### 🛞 3D-Modell austauschen / komprimieren
+Das Hintergrund-Modell liegt unter `public/chrom_felge.glb` (Meshopt-
+komprimiert, ~0,9 MB). Neues Modell einsetzen:
+
+```bash
+# Texturen/Materialien werden zur Laufzeit durch Chrom ersetzt → strippen,
+# dann Meshopt-Kompression (drei dekodiert Meshopt automatisch):
+npx gltf-transform prune neu.glb tmp.glb --keep-attributes false
+npx gltf-transform meshopt tmp.glb public/chrom_felge.glb --level medium
+```
+
+Der Download startet früh über einen Preload im Root-Layout
+(`src/app/layout.tsx`, nur auf Desktop-Geräten); die Felge blendet nach dem
+Laden weich ein (`ChromeRimScroll.tsx`).
+
 ### 🛞 Cinematische 3D-Hero (Alternative)
 Die Hero-Section liegt in `src/components/hero/`:
 

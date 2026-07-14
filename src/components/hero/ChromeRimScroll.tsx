@@ -50,7 +50,13 @@ const SPIN_AXIS = new THREE.Vector3(1, 0.35, 0).normalize();
 const BASE_QUAT = new THREE.Quaternion().setFromEuler(new THREE.Euler(0.12, 0, -0.08));
 const _spin = new THREE.Quaternion();
 
-function Rim({ scroll }: { scroll: React.MutableRefObject<number> }) {
+function Rim({
+  scroll,
+  onReady,
+}: {
+  scroll: React.MutableRefObject<number>;
+  onReady?: () => void;
+}) {
   const group = useRef<THREE.Object3D>(null);
   const shadow = useRef<THREE.Group>(null);
   const smoothed = useRef(0);
@@ -75,7 +81,9 @@ function Rim({ scroll }: { scroll: React.MutableRefObject<number> }) {
     const center = box.getCenter(new THREE.Vector3());
     scene.position.sub(center);
     scene.scale.setScalar(2.4 / Math.max(size.x, size.y, size.z));
-  }, [scene]);
+    // Modell ist geladen & vorbereitet → weiches Einblenden auslösen
+    onReady?.();
+  }, [scene, onReady]);
 
   useFrame(({ camera }) => {
     if (!group.current) return;
@@ -136,9 +144,20 @@ function NeonStrip({
 
 export default function ChromeRimScroll() {
   const scroll = useScrollProgress();
+  // Weiches Einblenden, sobald das Modell geladen ist (kein hartes Aufploppen)
+  const [ready, setReady] = useState(false);
 
   return (
-    <div style={{ position: "fixed", inset: 0, zIndex: 0, background: "#050507" }}>
+    <div
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 0,
+        background: "#050507",
+        opacity: ready ? 1 : 0,
+        transition: "opacity 1.2s ease-out",
+      }}
+    >
       <Canvas
         shadows
         camera={{ position: [0, 0.9, 6.2], fov: 38 }}
@@ -175,7 +194,7 @@ export default function ChromeRimScroll() {
         <directionalLight intensity={0.15} color="#9db8ff" position={[-5, 2, -4]} />
         <ambientLight intensity={0.02} color="#aebfdd" />
 
-        <Rim scroll={scroll} />
+        <Rim scroll={scroll} onReady={() => setReady(true)} />
 
         <NeonStrip position={[2.2, 2.8, -4.5]} rotation={[0, -0.25, 0.05]} size={[8, 0.04]} color="#dbeaff" intensity={1.8} />
         <NeonStrip position={[-4.4, 0.2, -3.8]} rotation={[0, 0.5, 0]} size={[6, 0.035]} color="#cce0ff" intensity={1.5} />
