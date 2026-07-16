@@ -13,9 +13,7 @@ import { Button } from "@/components/ui/Button";
 import { MagneticButton } from "@/components/ui/MagneticButton";
 import { SplitReveal } from "@/components/ui/SplitReveal";
 import { ServiceCard } from "@/components/cards/ServiceCard";
-import { ProductCard } from "@/components/cards/ProductCard";
 import { services } from "@/data/services";
-import { products } from "@/data/products";
 
 export default function HomePage() {
   return (
@@ -38,6 +36,9 @@ export default function HomePage() {
         sub="Wir verdichten Oberflächen bis sie ihre Umgebung reflektieren – tief, brillant, dauerhaft."
         hint="Weiter scrollen"
       />
+
+      {/* Lookbook – das Herzstück: gepinnte, horizontal scrollende Galerie */}
+      <LookbookScroller />
 
       {/* Leistungen */}
       <section className="py-24">
@@ -64,34 +65,6 @@ export default function HomePage() {
 
       {/* Prozess – Sticky Scroll-Storytelling */}
       <ProcessStory />
-
-      {/* Lookbook – gepinnte, horizontal scrollende Galerie */}
-      <LookbookScroller />
-
-      {/* Pflegeprodukte */}
-      <section className="border-y border-white/10 bg-ink-900/40 py-24">
-        <Container>
-          <div className="mb-14 flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
-            <SectionHeading
-              eyebrow="Pflegeprodukte"
-              title="Chromwerk Private Label"
-              description="Eigene Pflegeprodukte, entwickelt für Chrom- und hochglanzverdichtete Oberflächen."
-            />
-            <Reveal variant="fade">
-              <Button href="/pflegeprodukte" variant="outline" size="md">
-                Zum Shop
-              </Button>
-            </Reveal>
-          </div>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {products.map((p, i) => (
-              <Reveal key={p.id} index={i} variant="scale">
-                <ProductCard product={p} />
-              </Reveal>
-            ))}
-          </div>
-        </Container>
-      </section>
 
       {/* Cinematic Statement (Beat) */}
       <CinematicStatement

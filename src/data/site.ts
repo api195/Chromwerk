@@ -48,9 +48,8 @@ export type NavItem = { label: string; href: string };
 
 export const navigation: NavItem[] = [
   { label: "Start", href: "/" },
-  { label: "Leistungen", href: "/leistungen" },
   { label: "Lookbook", href: "/lookbook" },
-  { label: "Felgen kaufen", href: "/felgen" },
+  { label: "Leistungen", href: "/leistungen" },
   { label: "Pflegeprodukte", href: "/pflegeprodukte" },
   { label: "Termin buchen", href: "/termin" },
   { label: "Über uns", href: "/ueber" },

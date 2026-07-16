@@ -8,7 +8,6 @@ import { navigation } from "@/data/site";
 import { Logo } from "@/components/logo/Logo";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
-import { useCart } from "@/components/cart/CartProvider";
 import { cn } from "@/lib/utils";
 
 export function Navbar() {
@@ -17,7 +16,6 @@ export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   // Auf der Startseite erscheint die Navigation erst nach dem Hero-Intro.
   const [revealed, setRevealed] = useState(false);
-  const { count, setOpen } = useCart();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -94,24 +92,7 @@ export function Navbar() {
         </nav>
 
         <div className="flex items-center gap-2">
-          {/* Warenkorb */}
-          <button
-            onClick={() => setOpen(true)}
-            aria-label="Warenkorb öffnen"
-            className="relative rounded-full border border-white/10 p-2.5 text-chrome-200 transition hover:bg-white/10 hover:text-white"
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
-              <circle cx="9" cy="21" r="1" />
-              <circle cx="20" cy="21" r="1" />
-              <path d="M1 1h4l2.6 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6" />
-            </svg>
-            {count > 0 && (
-              <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-crimson px-1 text-[10px] font-bold text-white">
-                {count}
-              </span>
-            )}
-          </button>
-
+          {/* Warenkorb ausgeblendet, bis der Shop startet (Coming Soon) */}
           <div className="hidden sm:block">
             <Button href="/termin" variant="primary" size="sm">
               Termin

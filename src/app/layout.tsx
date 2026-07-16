@@ -6,7 +6,6 @@ import { SmoothScroll } from "@/components/layout/SmoothScroll";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { CartProvider } from "@/components/cart/CartProvider";
-import { CartDrawer } from "@/components/cart/CartDrawer";
 
 /**
  * Schriften (self-hosted via next/font, kein externer Runtime-Request).
@@ -39,7 +38,6 @@ export const metadata: Metadata = {
     "Chromfelgen",
     "Felgenaufbereitung",
     "Köln",
-    "Felgen kaufen",
     site.name,
   ],
   openGraph: {
@@ -86,7 +84,7 @@ export default function RootLayout({
             <main className="min-h-screen">{children}</main>
             <Footer />
           </SmoothScroll>
-          <CartDrawer />
+          {/* CartDrawer ausgeblendet, bis der Shop startet (Coming Soon) */}
         </CartProvider>
       </body>
     </html>

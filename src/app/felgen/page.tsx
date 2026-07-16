@@ -1,27 +1,25 @@
 import type { Metadata } from "next";
-import { PageHeader } from "@/components/layout/PageHeader";
-import { Container } from "@/components/ui/Container";
-import { WheelShop } from "@/components/shop/WheelShop";
+import { ComingSoon } from "@/components/sections/ComingSoon";
 
 export const metadata: Metadata = {
-  title: "Felgen kaufen",
+  title: "Felgen – Coming Soon",
   description:
-    "Hochglanzverdichtete Felgensätze kaufen – geprüfte Premium-Qualität von Chromwerk Köln. Filtern nach Marke, Zollgröße und Zustand.",
+    "Der Chromwerk Felgen-Shop mit hochglanzverdichteten Felgensätzen erscheint in Kürze.",
+  robots: { index: false, follow: true },
 };
 
+/**
+ * Felgen-Shop – Coming Soon (bewusst nicht in der Navigation verlinkt).
+ * Zum Launch: diese Seite wieder durch den Shop ersetzen
+ * (WheelShop aus @/components/shop/WheelShop) und den Nav-Eintrag
+ * in src/data/site.ts ergänzen.
+ */
 export default function FelgenPage() {
   return (
-    <>
-      <PageHeader
-        eyebrow="Felgen-Shop"
-        title="Hochglanzverdichtete Felgen"
-        description="Sofort verfügbare, veredelte Felgensätze in Premium-Qualität. Geprüft, aufbereitet und bereit für die Montage. Kaufen oder unverbindlich anfragen."
-      />
-      <section className="py-20">
-        <Container>
-          <WheelShop />
-        </Container>
-      </section>
-    </>
+    <ComingSoon
+      eyebrow="Chromwerk Köln"
+      title="Felgen"
+      description="Der Verkauf hochglanzverdichteter Felgensätze startet in Kürze. Du möchtest deine eigenen Felgen veredeln lassen? Buch jetzt deinen Termin."
+    />
   );
 }
