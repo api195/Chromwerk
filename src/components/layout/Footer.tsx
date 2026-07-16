@@ -125,11 +125,10 @@ export function Footer() {
             © {year} {site.name} {site.city}. Alle Rechte vorbehalten.
           </p>
           <div className="flex gap-6">
-            {/* TODO: Rechtstexte ergänzen */}
-            <Link href="/kontakt" className="transition hover:text-chrome-200">
+            <Link href="/impressum" className="transition hover:text-chrome-200">
               Impressum
             </Link>
-            <Link href="/kontakt" className="transition hover:text-chrome-200">
+            <Link href="/datenschutz" className="transition hover:text-chrome-200">
               Datenschutz
             </Link>
           </div>

@@ -13,12 +13,11 @@ export const site = {
   claim: "Präzisions-Felgenveredelung aus Köln",
   description:
     "Chromwerk aus Köln ist spezialisiert auf Hochglanzverdichtung, Aufbereitung und Veredelung von Felgen. Premium-Portfolio, Felgen-Shop, eigene Pflegeprodukte und Online-Terminbuchung.",
-  // TODO: Echte Kontaktdaten eintragen
-  phone: "+49 (0) 221 000 000",
-  email: "kontakt@chromwerk.store",
+  phone: "0179 2693001",
+  email: "info@chromwerk.org",
   address: {
-    street: "Musterstraße 1",
-    zip: "50667",
+    street: "Reutlinger Str. 37",
+    zip: "50739",
     city: "Köln",
     country: "Deutschland",
   },
