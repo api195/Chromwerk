@@ -3,7 +3,7 @@
 **Auftrag:** Erstellung von **Impressum** und **Datenschutzerklärung** für die
 Website der Firma Chromwerk (Felgenveredelung / Hochglanzverdichtung, Köln).
 
-**Website:** https://chromwerk.de (aktuell Vorabversion unter
+**Website:** https://chromwerk.store (aktuell Vorabversion unter
 https://chromwerk.vercel.app)
 
 Dieses Dokument beschreibt (A) die Angaben zum Unternehmen, (B) die

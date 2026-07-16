@@ -15,7 +15,7 @@ export const site = {
     "Chromwerk aus Köln ist spezialisiert auf Hochglanzverdichtung, Aufbereitung und Veredelung von Felgen. Premium-Portfolio, Felgen-Shop, eigene Pflegeprodukte und Online-Terminbuchung.",
   // TODO: Echte Kontaktdaten eintragen
   phone: "+49 (0) 221 000 000",
-  email: "kontakt@chromwerk.de",
+  email: "kontakt@chromwerk.store",
   address: {
     street: "Musterstraße 1",
     zip: "50667",
@@ -34,7 +34,7 @@ export const site = {
     { label: "YouTube", href: "https://youtube.com/", icon: "youtube" },
   ] as const,
   // Für SEO / Metadaten – später auf echte Domain setzen
-  url: "https://chromwerk.de",
+  url: "https://chromwerk.store",
 
   /**
    * Hero-Felge (Startseite, Foto-Hero) – echtes Chromwerk-Felgenfoto.
