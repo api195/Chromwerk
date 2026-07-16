@@ -1,20 +1,16 @@
 import { NextResponse } from "next/server";
+import { sendMail, fieldsToHtml } from "@/lib/mail";
 
 /**
- * Terminanfrage-Endpoint (Platzhalter).
- * ------------------------------------------------------------------
- * Aktuell werden die Daten nur validiert und geloggt. Hier später
- * anbinden, was du brauchst:
- *   • E-Mail-Versand (z. B. Resend, Nodemailer, Postmark)
- *   • Datenbank (z. B. Supabase, Prisma)
- *   • Kalender (z. B. Google Calendar, Cal.com)
- *   • Datei-Upload für Bilder (z. B. Supabase Storage, S3, UploadThing)
+ * Terminanfrage-Endpoint.
+ * Validiert die Anfrage und sendet sie per E-Mail (Resend) an den Betreiber.
+ * Ohne konfigurierten RESEND_API_KEY wird die Anfrage nur geloggt
+ * (lokale Entwicklung).
  */
 export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    // Minimale Validierung der Pflichtfelder
     if (!body?.name || !body?.email) {
       return NextResponse.json(
         { ok: false, error: "Name und E-Mail sind erforderlich." },
@@ -22,14 +18,34 @@ export async function POST(request: Request) {
       );
     }
 
-    // TODO: Hier E-Mail/DB/Kalender-Integration ergänzen.
-    console.info("[Chromwerk] Neue Terminanfrage:", body);
+    const result = await sendMail({
+      subject: `Neue Terminanfrage von ${body.name}`,
+      replyTo: body.email,
+      html: fieldsToHtml([
+        ["Name", body.name],
+        ["E-Mail", body.email],
+        ["Telefon", body.phone],
+        ["Fahrzeugmodell", body.vehicle],
+        ["Felgengröße", body.size],
+        ["Anzahl der Felgen", body.count],
+        ["Zustand der Felgen", body.condition],
+        ["Gewünschte Leistung", body.service],
+        ["Wunschtermin", body.date],
+        ["Nachricht", body.message],
+        ["Hochgeladene Bilder", body.fileCount ? `${body.fileCount} (Upload folgt später)` : ""],
+      ]),
+    });
+
+    if (result === "skipped") {
+      console.info("[Chromwerk] Terminanfrage (nur geloggt):", body);
+    }
 
     return NextResponse.json({ ok: true, message: "Anfrage erhalten." });
-  } catch {
+  } catch (err) {
+    console.error("[Chromwerk] Terminanfrage fehlgeschlagen:", err);
     return NextResponse.json(
-      { ok: false, error: "Ungültige Anfrage." },
-      { status: 400 }
+      { ok: false, error: "Anfrage konnte nicht übermittelt werden." },
+      { status: 500 }
     );
   }
 }

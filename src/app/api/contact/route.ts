@@ -1,8 +1,11 @@
 import { NextResponse } from "next/server";
+import { sendMail, fieldsToHtml } from "@/lib/mail";
 
 /**
- * Kontakt-Endpoint (Platzhalter).
- * Hier später E-Mail-Versand oder Datenbank anbinden (siehe /api/booking).
+ * Kontakt-Endpoint.
+ * Validiert die Nachricht und sendet sie per E-Mail (Resend) an den Betreiber.
+ * Ohne konfigurierten RESEND_API_KEY wird die Nachricht nur geloggt
+ * (lokale Entwicklung).
  */
 export async function POST(request: Request) {
   try {
@@ -15,14 +18,27 @@ export async function POST(request: Request) {
       );
     }
 
-    // TODO: E-Mail-/DB-Integration ergänzen.
-    console.info("[Chromwerk] Neue Kontaktnachricht:", body);
+    const result = await sendMail({
+      subject: `Neue Kontaktanfrage von ${body.name}${body.subject ? ` – ${body.subject}` : ""}`,
+      replyTo: body.email,
+      html: fieldsToHtml([
+        ["Name", body.name],
+        ["E-Mail", body.email],
+        ["Betreff", body.subject],
+        ["Nachricht", body.message],
+      ]),
+    });
+
+    if (result === "skipped") {
+      console.info("[Chromwerk] Kontaktnachricht (nur geloggt):", body);
+    }
 
     return NextResponse.json({ ok: true, message: "Nachricht erhalten." });
-  } catch {
+  } catch (err) {
+    console.error("[Chromwerk] Kontaktnachricht fehlgeschlagen:", err);
     return NextResponse.json(
-      { ok: false, error: "Ungültige Anfrage." },
-      { status: 400 }
+      { ok: false, error: "Nachricht konnte nicht übermittelt werden." },
+      { status: 500 }
     );
   }
 }
