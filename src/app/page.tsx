@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { WheelBackground } from "@/components/hero/WheelBackground";
 import { HeroWheel } from "@/components/hero/HeroWheel";
-import { Stats } from "@/components/sections/Stats";
 import { ProcessStory } from "@/components/sections/ProcessStory";
 import { CinematicStatement } from "@/components/sections/CinematicStatement";
 import { LookbookScroller } from "@/components/sections/LookbookScroller";
@@ -25,7 +24,6 @@ export default function HomePage() {
       <div className="relative z-10">
       <HeroWheel />
 
-      <Stats />
 
       {/* Cinematic Statement (Beat) */}
       <CinematicStatement
