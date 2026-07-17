@@ -76,19 +76,42 @@ export default function LookbookDetailPage({
         </div>
       </Container>
 
-      {/* Vorher/Nachher-Vergleich */}
+      {/* Vorher/Nachher-Vergleich – nur wenn ein echtes Vorher-Bild vorliegt.
+          Fehlt es (z. B. nur Ergebnisfoto vorhanden), zeigen wir stattdessen
+          das Ergebnis-Bild groß an. */}
       <section className="py-16">
         <Container>
-          <h2 className="mb-6 font-display text-2xl font-semibold uppercase tracking-wide text-chrome-100">
-            Vorher / Nachher
-          </h2>
-          <Reveal>
-            <BeforeAfter
-              before={project.beforeImages[0]}
-              after={project.afterImages[0]}
-              className="mx-auto max-w-4xl"
-            />
-          </Reveal>
+          {project.beforeImages.length > 0 ? (
+            <>
+              <h2 className="mb-6 font-display text-2xl font-semibold uppercase tracking-wide text-chrome-100">
+                Vorher / Nachher
+              </h2>
+              <Reveal>
+                <BeforeAfter
+                  before={project.beforeImages[0]}
+                  after={project.afterImages[0]}
+                  className="mx-auto max-w-4xl"
+                />
+              </Reveal>
+            </>
+          ) : (
+            <>
+              <h2 className="mb-6 font-display text-2xl font-semibold uppercase tracking-wide text-chrome-100">
+                Ergebnis
+              </h2>
+              <Reveal>
+                <div className="relative mx-auto aspect-[4/3] w-full max-w-4xl overflow-hidden rounded-2xl border border-white/10 bg-ink-900">
+                  <Image
+                    src={project.afterImages[0]}
+                    alt={`${project.title} – Ergebnis`}
+                    fill
+                    sizes="(max-width:1024px) 100vw, 896px"
+                    className="object-cover"
+                  />
+                </div>
+              </Reveal>
+            </>
+          )}
         </Container>
       </section>
 

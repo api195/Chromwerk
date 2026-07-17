@@ -22,9 +22,9 @@ export const site = {
     country: "Deutschland",
   },
   hours: [
-    { day: "Mo – Fr", time: "09:00 – 18:00" },
-    { day: "Samstag", time: "10:00 – 15:00" },
-    { day: "Sonntag", time: "Geschlossen" },
+    { day: "Mo – Fr", time: "10:00 – 22:00" },
+    { day: "Samstag", time: "10:00 – 22:00" },
+    { day: "Sonntag", time: "10:00 – 22:00" },
   ],
   socials: [
     {
