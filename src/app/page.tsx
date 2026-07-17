@@ -2,7 +2,6 @@ import Link from "next/link";
 import { WheelBackground } from "@/components/hero/WheelBackground";
 import { HeroWheel } from "@/components/hero/HeroWheel";
 import { ProcessStory } from "@/components/sections/ProcessStory";
-import { CinematicStatement } from "@/components/sections/CinematicStatement";
 import { LookbookScroller } from "@/components/sections/LookbookScroller";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -23,17 +22,6 @@ export default function HomePage() {
       {/* Inhalt scrollt über dem Hintergrund (z-10) */}
       <div className="relative z-10">
       <HeroWheel />
-
-
-      {/* Cinematic Statement (Beat) */}
-      <CinematicStatement
-        eyebrow="Hochglanzverdichtung · Köln"
-        line1="Mehr als eine Felge."
-        line2="Ein Spiegel."
-        accent="iridescent"
-        sub="Wir verdichten Oberflächen bis sie ihre Umgebung reflektieren – tief, brillant, dauerhaft."
-        hint="Weiter scrollen"
-      />
 
       {/* Lookbook – das Herzstück: gepinnte, horizontal scrollende Galerie */}
       <LookbookScroller />
@@ -63,15 +51,6 @@ export default function HomePage() {
 
       {/* Prozess – Sticky Scroll-Storytelling */}
       <ProcessStory />
-
-      {/* Cinematic Statement (Beat) */}
-      <CinematicStatement
-        eyebrow="Handwerk aus Köln"
-        line1="Präzision, die man"
-        line2="sehen kann."
-        accent="chrome"
-        sub="Jede Felge durchläuft denselben kompromisslosen Prozess – bis zum perfekten Spiegel."
-      />
 
       {/* CTA */}
       <section className="py-24">
