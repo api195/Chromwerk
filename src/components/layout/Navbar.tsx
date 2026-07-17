@@ -46,6 +46,14 @@ export function Navbar() {
     setMobileOpen(false);
   }, [pathname]);
 
+  // Hintergrund-Scrollen sperren, solange das Mobile-Menü offen ist
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
+
   return (
     <header
       className={cn(
@@ -119,38 +127,40 @@ export function Navbar() {
         </div>
       </Container>
 
-      {/* Mobile-Navigation */}
+      {/* Mobile-Navigation – deckendes Vollbild-Overlay */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.nav
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="overflow-hidden border-t border-white/10 bg-ink-950/95 backdrop-blur-xl xl:hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="fixed inset-x-0 top-20 h-[calc(100dvh-5rem)] overflow-y-auto border-t border-white/10 bg-ink-950 xl:hidden"
           >
-            <Container className="flex flex-col gap-1 py-4">
-              {navigation.map((item) => {
-                const active =
-                  item.href === "/"
-                    ? pathname === "/"
-                    : pathname.startsWith(item.href);
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={cn(
-                      "rounded-lg px-4 py-3 text-sm font-medium uppercase tracking-widest transition",
-                      active
-                        ? "bg-white/5 text-white"
-                        : "text-chrome-300 hover:bg-white/5 hover:text-white"
-                    )}
-                  >
-                    {item.label}
-                  </Link>
-                );
-              })}
-              <Button href="/termin" variant="primary" size="md" className="mt-2">
+            <Container className="flex min-h-full flex-col py-6">
+              <div className="flex flex-col gap-1">
+                {navigation.map((item) => {
+                  const active =
+                    item.href === "/"
+                      ? pathname === "/"
+                      : pathname.startsWith(item.href);
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className={cn(
+                        "rounded-xl px-4 py-4 text-base font-medium uppercase tracking-widest transition",
+                        active
+                          ? "bg-white/5 text-white"
+                          : "text-chrome-300 hover:bg-white/5 hover:text-white"
+                      )}
+                    >
+                      {item.label}
+                    </Link>
+                  );
+                })}
+              </div>
+              <Button href="/termin" variant="primary" size="lg" className="mt-6 w-full">
                 Termin buchen
               </Button>
             </Container>

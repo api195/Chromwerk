@@ -66,75 +66,31 @@ export function LookbookScroller() {
           ref={track}
           className={
             enhanced
-              ? "flex flex-nowrap items-stretch gap-8 pl-6 will-change-transform sm:pl-10 lg:pl-16"
-              : "flex flex-nowrap items-stretch gap-6 overflow-x-auto px-6 pb-4 [scrollbar-width:none] sm:px-10 [&::-webkit-scrollbar]:hidden"
+              ? "flex flex-nowrap items-center gap-6 pl-6 will-change-transform sm:pl-10 lg:gap-10 lg:pl-16"
+              : "flex flex-nowrap items-center gap-4 overflow-x-auto px-5 pb-4 [scrollbar-width:none] sm:gap-6 sm:px-10 [&::-webkit-scrollbar]:hidden"
           }
         >
-          {/* Intro-Panel */}
-          <div className="flex w-[80vw] shrink-0 flex-col justify-center sm:w-[420px] lg:w-[30vw]">
-            <span className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-widest2 text-crimson">
-              <span className="h-px w-6 bg-crimson/70" />
-              Lookbook
-            </span>
-            <h2 className="mt-5 font-display text-5xl font-bold uppercase leading-[0.9] tracking-tight text-transparent bg-chrome-text bg-clip-text lg:text-7xl">
-              Editorial
-            </h2>
-            <p className="mt-5 max-w-sm text-sm leading-relaxed text-chrome-400">
-              Ausgewählte Arbeiten wie in einem Magazin.{" "}
-              {enhanced ? "Scroll weiter – die Galerie fährt mit." : "Wisch zur Seite."}
-            </p>
-            <Link
-              href="/lookbook"
-              className="mt-8 inline-flex items-center gap-2 text-sm font-medium uppercase tracking-widest text-chrome-200 transition hover:text-white"
-            >
-              Alle Projekte
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M5 12h14M13 6l6 6-6 6" />
-              </svg>
-            </Link>
-          </div>
-
-          {/* Projektkarten */}
-          {lookbookProjects.map((p, i) => (
+          {/* Nur die Felgen – vollständig sichtbar (object-contain auf Schwarz),
+              ohne jede Beschriftung. Bild ist klickbar → Projekt-Detailseite. */}
+          {lookbookProjects.map((p) => (
             <Link
               key={p.slug}
               href={`/lookbook/${p.slug}`}
-              className="group relative aspect-[3/4] w-[80vw] shrink-0 self-center overflow-hidden rounded-3xl border border-white/10 bg-ink-900 sm:w-[360px] lg:h-[70vh] lg:w-[26vw]"
+              aria-label={p.title}
+              className="group relative aspect-square w-[86vw] shrink-0 self-center overflow-hidden rounded-3xl bg-black sm:w-[440px] lg:h-[74vh] lg:w-[74vh]"
             >
               <Image
                 src={p.coverImage}
                 alt={p.title}
                 fill
-                sizes="(max-width:1024px) 80vw, 26vw"
-                className="object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-110"
+                sizes="(max-width:640px) 86vw, (max-width:1024px) 440px, 74vh"
+                className="object-contain transition-transform duration-[1200ms] ease-out group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/20 to-transparent" />
+              {/* dezenter Licht-Sweep beim Hover */}
               <div className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
-
-              <span className="absolute left-5 top-5 font-display text-sm font-semibold tracking-widest text-chrome-300">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <span className="absolute right-5 top-5 rounded-full bg-ink-950/70 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-chrome-200 backdrop-blur">
-                {p.size}″
-              </span>
-
-              <div className="absolute inset-x-0 bottom-0 p-6">
-                <p className="text-[11px] uppercase tracking-widest2 text-crimson">
-                  {p.vehicle} · {p.brand}
-                </p>
-                <h3 className="mt-2 font-display text-2xl font-bold uppercase leading-none tracking-tight text-transparent bg-chrome-text bg-clip-text">
-                  {p.model}
-                </h3>
-                <span className="mt-4 inline-flex items-center gap-1 text-[11px] font-medium uppercase tracking-widest text-chrome-200 transition-colors group-hover:text-white">
-                  Ansehen
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="transition-transform group-hover:translate-x-1">
-                    <path d="M5 12h14M13 6l6 6-6 6" />
-                  </svg>
-                </span>
-              </div>
             </Link>
           ))}
-          <div className="w-6 shrink-0" aria-hidden />
+          <div className="w-2 shrink-0" aria-hidden />
         </div>
       </div>
     </section>
