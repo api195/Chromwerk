@@ -13,6 +13,40 @@ const HERO = site.heroImage;
  */
 export const lookbookProjects: LookbookProject[] = [
   {
+    slug: "yido-yp-forged-chrom",
+    title: "Yido Performance YP Forged – Chrom-Hochglanz",
+    brand: "Yido Performance",
+    model: "YP Forged",
+    size: 21,
+    wheelType: "Mehrspeiche",
+    vehicle: "Universal",
+    condition: "Neu",
+    finish: "Chrom-Hochglanz",
+    summary:
+      "Geschmiedete Mehrspeiche in tiefem Chrom-Hochglanz – kompromissloser Spiegeleffekt.",
+    description:
+      "Ein geschmiedeter Yido Performance YP-Satz, veredelt in tiefem Chrom-Hochglanz. Jede Speiche wurde mehrstufig verdichtet, bis Licht und Umgebung vollständig in der Oberfläche gespiegelt werden.",
+    // Vorher-Bild (matte Version) folgt – sobald vorhanden, hier ergänzen:
+    // beforeImages: ["/images/lookbook/yido-yp-forged-schwarz.webp"],
+    beforeImages: [],
+    afterImages: ["/images/lookbook/yido-yp-forged-chrom.webp"],
+    coverImage: "/images/lookbook/yido-yp-forged-chrom.webp",
+    steps: [
+      { title: "Zustandsanalyse", text: "Vermessung der Oberfläche und Glanzgradbestimmung." },
+      { title: "Feinschliff", text: "Speichen und Stern stufenweise in Handarbeit vorbereitet." },
+      { title: "Verdichtung", text: "Mehrstufige mechanische Hochglanzverdichtung bis zur Chromtiefe." },
+      { title: "Versiegelung", text: "Keramische Schutzschicht für dauerhaften Glanz." },
+    ],
+    wheelData: [
+      { label: "Zollgröße", value: "21 Zoll" },
+      { label: "Bauart", value: "Geschmiedet (Forged)" },
+      { label: "Finish", value: "Chrom-Hochglanz" },
+      { label: "Design", value: "Mehrspeiche" },
+    ],
+    clientNote: "Maximale Spiegelwirkung bei erhaltener Speichenkontur gewünscht.",
+    durationDays: 5,
+  },
+  {
     slug: "bbs-chr-audi-rs6",
     title: "BBS CH-R – Audi RS6",
     brand: "BBS",

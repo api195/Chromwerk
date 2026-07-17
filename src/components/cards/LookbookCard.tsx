@@ -27,8 +27,9 @@ export function LookbookCard({ project }: { project: LookbookProject }) {
             {project.wheelType}
           </span>
         </div>
+        {/* Badge nur zeigen, wenn ein echtes Vorher-Bild existiert */}
         <span className="absolute right-3 top-3 flex items-center gap-1 rounded-full bg-crimson/90 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-white">
-          Vorher / Nachher
+          {project.beforeImages.length > 0 ? "Vorher / Nachher" : "Ergebnis"}
         </span>
       </div>
 
