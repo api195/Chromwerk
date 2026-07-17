@@ -1,44 +1,41 @@
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 /**
- * Chromwerk Wortmarke (Logo).
+ * Chromwerk Logo (Bildmarke).
  * ------------------------------------------------------------------
- * STANDARD: CSS-Chrom-Wortmarke – komplett selbsttragend, kein Bild nötig.
+ * Nutzt das echte Logo aus /public/images/brand/chromwerk-logo.png
+ * (freigestellt, transparenter Hintergrund – funktioniert auf allen
+ * dunklen Flächen). Neues Logo einsetzen: Datei ersetzen und ggf.
+ * width/height an das Seitenverhältnis anpassen.
  *
- * DEIN ECHTES LOGO EINBINDEN:
- * 1. Lege deine Logo-Datei ab, z. B. /public/images/brand/chromwerk-logo.png
- * 2. Kommentiere den <span>-Block unten aus und nutze stattdessen:
- *
- *    import Image from "next/image";
- *    <Image src="/images/brand/chromwerk-logo.png" alt="Chromwerk Köln"
- *      width={220} height={64} priority className={className} />
+ * Die frühere CSS-Wortmarke bleibt unten auskommentiert als Fallback.
  */
 export function Logo({
   className,
-  withCity = true,
 }: {
   className?: string;
+  /** Ehemalige Option der CSS-Wortmarke – im Bildlogo bereits enthalten. */
   withCity?: boolean;
 }) {
   return (
-    <span
-      className={cn(
-        "inline-flex flex-col leading-none select-none",
-        className
-      )}
-      aria-label="Chromwerk Köln"
-    >
-      <span className="font-display text-2xl font-bold uppercase tracking-tight">
-        <span className="bg-chrome-text bg-clip-text text-transparent drop-shadow-[0_1px_0_rgba(0,0,0,0.6)]">
-          Chrom
-        </span>
-        <span className="italic text-crimson">Werk</span>
-      </span>
-      {withCity && (
-        <span className="mt-0.5 text-[10px] font-medium uppercase tracking-widest2 text-chrome-400">
-          Köln
-        </span>
-      )}
-    </span>
+    <Image
+      src="/images/brand/chromwerk-logo.png"
+      alt="Chromwerk Köln – Hochglanzverdichtung von Felgen"
+      width={720}
+      height={366}
+      priority
+      className={cn("h-12 w-auto select-none sm:h-14", className)}
+    />
   );
 }
+
+/* CSS-Wortmarke (Fallback ohne Bilddatei):
+  <span className="inline-flex flex-col leading-none select-none" aria-label="Chromwerk Köln">
+    <span className="font-display text-2xl font-bold uppercase tracking-tight">
+      <span className="bg-chrome-text bg-clip-text text-transparent">Chrom</span>
+      <span className="italic text-crimson">Werk</span>
+    </span>
+    <span className="mt-0.5 text-[10px] font-medium uppercase tracking-widest2 text-chrome-400">Köln</span>
+  </span>
+*/
