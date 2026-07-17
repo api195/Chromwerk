@@ -26,11 +26,13 @@ export const site = {
     { day: "Samstag", time: "10:00 – 15:00" },
     { day: "Sonntag", time: "Geschlossen" },
   ],
-  // TODO: Echte Social-Media-URLs eintragen
   socials: [
-    { label: "Instagram", href: "https://instagram.com/", icon: "instagram" },
-    { label: "TikTok", href: "https://tiktok.com/", icon: "tiktok" },
-    { label: "YouTube", href: "https://youtube.com/", icon: "youtube" },
+    {
+      label: "Instagram",
+      href: "https://www.instagram.com/chromwerk.koeln",
+      icon: "instagram",
+    },
+    { label: "TikTok", href: "https://www.tiktok.com/@chromwerk", icon: "tiktok" },
   ] as const,
   // Für SEO / Metadaten – später auf echte Domain setzen
   url: "https://chromwerk.store",
