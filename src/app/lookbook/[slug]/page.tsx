@@ -90,7 +90,7 @@ export default function LookbookDetailPage({
                 <BeforeAfter
                   before={project.beforeImages[0]}
                   after={project.afterImages[0]}
-                  className="mx-auto max-w-4xl"
+                  className="max-w-xl"
                 />
               </Reveal>
             </>

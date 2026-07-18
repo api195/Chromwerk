@@ -10,15 +10,15 @@ export function LookbookCard({ project }: { project: LookbookProject }) {
       href={`/lookbook/${project.slug}`}
       className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-ink-800/60 transition-all duration-500 hover:border-chrome-400/40 hover:shadow-chrome"
     >
-      <div className="relative aspect-[4/3] overflow-hidden bg-ink-900">
+      <div className="relative aspect-square overflow-hidden bg-black">
         <Image
           src={project.coverImage}
           alt={project.title}
           fill
           sizes="(max-width:768px) 100vw, 33vw"
-          className="object-cover transition-transform duration-700 group-hover:scale-105"
+          className="object-contain transition-transform duration-700 group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/20 to-transparent" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
         <div className="absolute bottom-3 left-3 flex gap-2">
           <span className="rounded-full bg-ink-950/70 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-chrome-200 backdrop-blur">
             {project.size}″
