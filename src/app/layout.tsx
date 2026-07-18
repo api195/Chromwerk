@@ -7,6 +7,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { CartProvider } from "@/components/cart/CartProvider";
 import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
+import { LocalBusinessSchema } from "@/components/seo/LocalBusinessSchema";
 import { Analytics } from "@vercel/analytics/next";
 
 /**
@@ -35,13 +36,18 @@ export const metadata: Metadata = {
   },
   description: site.description,
   keywords: [
-    "Hochglanzverdichtung",
-    "Felgen polieren",
-    "Chromfelgen",
-    "Felgenaufbereitung",
-    "Köln",
+    "Hochglanzverdichtung Köln",
+    "Felgen veredeln Köln",
+    "Felgenaufbereitung Köln",
+    "Felgen polieren Köln",
+    "Chromfelgen Köln",
+    "Felgen verchromen",
+    "Felgenveredelung",
+    "Keramikversiegelung Felgen",
+    "Felgen Ankauf Köln",
     site.name,
   ],
+  alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     locale: "de_DE",
@@ -56,6 +62,11 @@ export const metadata: Metadata = {
     description: site.description,
   },
   robots: { index: true, follow: true },
+  // Geo-Angaben für lokale Suche (Region Nordrhein-Westfalen / Köln)
+  other: {
+    "geo.region": "DE-NW",
+    "geo.placename": "Köln",
+  },
 };
 
 export const viewport: Viewport = {
@@ -72,6 +83,8 @@ export default function RootLayout({
   return (
     <html lang="de" className={`${display.variable} ${sans.variable}`}>
       <body className="font-sans">
+        {/* Strukturierte Daten für lokales SEO (Google) */}
+        <LocalBusinessSchema />
         {/* Frühzeitiger Preload des 3D-Felgenmodells (nur Desktop-Geräte,
             auf denen der 3D-Hintergrund tatsächlich rendert). Startet den
             Download bereits beim HTML-Parsen statt erst nach der Hydration. */}

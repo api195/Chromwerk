@@ -7,9 +7,9 @@ import { Button } from "@/components/ui/Button";
 import { services } from "@/data/services";
 
 export const metadata: Metadata = {
-  title: "Leistungen",
+  title: "Leistungen – Hochglanzverdichtung & Felgenaufbereitung Köln",
   description:
-    "Hochglanzverdichtung, Aufbereitung, An- und Verkauf von Felgen sowie Pflegeberatung und eigene Chromwerk-Produkte – die Leistungen von Chromwerk Köln.",
+    "Hochglanzverdichtung, Aufbereitung sowie An- und Verkauf von Felgen in Köln. Chromwerk veredelt deine Felgen zu spiegelndem Chrom-Hochglanz – inkl. Keramikversiegelung.",
 };
 
 export default function LeistungenPage() {
