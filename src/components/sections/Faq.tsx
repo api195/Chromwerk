@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 const FAQ_ITEMS: { q: string; a: string }[] = [
   {
     q: "Was kostet die Hochglanzverdichtung?",
-    a: "Ein kompletter Satz (4 Felgen) kostet 500 € – inklusive keramischer Versiegelung. Schick uns einfach Bilder deiner Felgen über das Formular oder per WhatsApp, dann bekommst du eine verbindliche Einschätzung.",
+    a: "Ein kompletter Satz (4 Felgen) kostet circa 500 € – inklusive keramischer Versiegelung. Schick uns einfach Bilder deiner Felgen über das Formular oder per WhatsApp, dann bekommst du eine verbindliche Einschätzung.",
   },
   {
     q: "Wie lange dauert die Bearbeitung?",
