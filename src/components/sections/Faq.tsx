@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 const FAQ_ITEMS: { q: string; a: string }[] = [
   {
     q: "Was kostet die Hochglanzverdichtung?",
-    a: "Ein kompletter Satz (4 Felgen) kostet 500 € – inklusive keramischer Versiegelung. Schick uns einfach Bilder deiner Felgen über das Formular, dann bekommst du eine verbindliche Einschätzung.",
+    a: "Ein kompletter Satz (4 Felgen) kostet 500 € – inklusive keramischer Versiegelung. Schick uns einfach Bilder deiner Felgen über das Formular oder per WhatsApp, dann bekommst du eine verbindliche Einschätzung.",
   },
   {
     q: "Wie lange dauert die Bearbeitung?",
@@ -24,6 +24,22 @@ const FAQ_ITEMS: { q: string; a: string }[] = [
   {
     q: "Für welche Felgen ist das geeignet?",
     a: "Für die meisten Alufelgen – ob neu, gebraucht oder mit Gebrauchsspuren. Auch Bordsteinschäden können vor der Verdichtung aufbereitet werden. Schick uns Bilder, wir sagen dir ehrlich, was möglich ist.",
+  },
+  {
+    q: "Bearbeitet ihr auch beschädigte Felgen?",
+    a: "Ja. Bordsteinschäden, Kratzer und Korrosion werden vor der Verdichtung professionell aufbereitet – so entsteht die Basis für ein makelloses Ergebnis. Schick uns Fotos der Schäden, dann sagen wir dir, was möglich ist.",
+  },
+  {
+    q: "Wie bekomme ich ein Angebot?",
+    a: "Am schnellsten über das Terminformular oder per WhatsApp: ein paar Fotos deiner Felgen genügen. Wir melden uns in der Regel innerhalb von 24 Stunden mit einer Einschätzung und einem passenden Termin.",
+  },
+  {
+    q: "Kauft ihr auch gebrauchte Felgen an?",
+    a: "Ja, wir bewerten und kaufen gebrauchte Felgen an – unkompliziert und fair. Schick uns Marke, Modell und Bilder, dann machen wir dir ein Angebot.",
+  },
+  {
+    q: "Wie pflege ich die Felgen nach der Veredelung?",
+    a: "Am besten mit pH-neutralen Reinigern und weichen Tüchern – keine aggressiven Felgenreiniger oder scharfen Bürsten. So bleibt der Spiegelglanz lange erhalten. Passende Pflegeprodukte bieten wir bald selbst an.",
   },
 ];
 

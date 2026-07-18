@@ -2,7 +2,8 @@ import Link from "next/link";
 import { WheelBackground } from "@/components/hero/WheelBackground";
 import { HeroWheel } from "@/components/hero/HeroWheel";
 import { ProcessStory } from "@/components/sections/ProcessStory";
-import { LookbookScroller } from "@/components/sections/LookbookScroller";
+import { LookbookShowcase } from "@/components/sections/LookbookShowcase";
+import { Faq } from "@/components/sections/Faq";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
@@ -23,8 +24,21 @@ export default function HomePage() {
       <div className="relative z-10">
       <HeroWheel />
 
-      {/* Lookbook – das Herzstück: gepinnte, horizontal scrollende Galerie */}
-      <LookbookScroller />
+      {/* Lookbook – ruhige, statische Felgen-Galerie */}
+      <LookbookShowcase />
+
+      {/* FAQ – beantwortet die wichtigsten Fragen direkt auf der Startseite */}
+      <section className="py-8">
+        <Container className="max-w-3xl">
+          <SectionHeading
+            eyebrow="Gut zu wissen"
+            title="Häufige Fragen"
+            description="Preis, Ablauf, Haltbarkeit – die wichtigsten Antworten auf einen Blick."
+            className="mb-10"
+          />
+          <Faq />
+        </Container>
+      </section>
 
       {/* Leistungen */}
       <section className="py-24">
