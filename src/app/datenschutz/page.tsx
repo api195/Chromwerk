@@ -90,20 +90,31 @@ export default function DatenschutzPage() {
               </p>
             </Section>
 
-            <Section title="4. Keine Cookies und kein Tracking">
+            <Section title="4. Reichweitenmessung (Vercel Web Analytics)">
               <p>
-                Auf dieser Website werden derzeit keine Cookies zu Analyse-,
-                Marketing- oder Trackingzwecken eingesetzt.
+                Zur statistischen Auswertung der Zugriffe wird „Vercel Web
+                Analytics" des Hosting-Anbieters Vercel eingesetzt. Damit wird
+                erfasst, wie viele Seitenaufrufe stattfinden und welche Seiten
+                aufgerufen werden.
               </p>
               <p>
-                Es findet derzeit insbesondere keine Nutzung von
-                Web-Analytics, Werbe- oder Retargeting-Pixeln,
+                Vercel Web Analytics arbeitet <strong>cookielos</strong>: Es
+                werden keine Cookies gesetzt und keine geräte- oder
+                nutzerübergreifenden Profile gebildet. Die Auswertung erfolgt in
+                aggregierter, anonymisierter Form; einzelne Besucher sind für uns
+                nicht identifizierbar.
+              </p>
+              <p>
+                Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO. Das berechtigte
+                Interesse liegt in der bedarfsgerechten Gestaltung und
+                statistischen Auswertung unserer Website.
+              </p>
+              <p>
+                Darüber hinaus werden keine Werbe- oder Retargeting-Pixel,
                 Social-Media-Plugins, extern eingebetteten Karten oder extern
-                eingebetteten Videos statt.
-              </p>
-              <p>
-                Die verwendeten Schriftarten werden lokal gehostet. Ein Abruf
-                externer Schriftarten-Server findet nicht statt.
+                eingebetteten Videos eingesetzt. Die verwendeten Schriftarten
+                werden lokal gehostet; ein Abruf externer Schriftarten-Server
+                findet nicht statt.
               </p>
             </Section>
 
