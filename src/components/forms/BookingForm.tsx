@@ -9,10 +9,40 @@ import { services } from "@/data/services";
 /**
  * BookingForm – Terminanfrage für Hochglanzverdichtung.
  * ------------------------------------------------------------------
- * Sendet die Daten an /api/booking (Platzhalter-Endpoint).
- * Dort später E-Mail-Versand, Datenbank oder Kalenderintegration ergänzen.
- * Der Bild-Upload wird aktuell nur clientseitig als Dateiliste erfasst.
+ * Sendet die Daten als multipart/form-data an /api/booking – inklusive
+ * der Felgen-Bilder, die dort als E-Mail-Anhang mitgeschickt werden.
+ * Bilder werden vor dem Upload clientseitig verkleinert (max. 1600 px,
+ * JPEG), damit auch Handyfotos schnell und zuverlässig durchgehen.
  */
+const MAX_FILES = 6;
+
+/** Bild clientseitig verkleinern; bei Fehlern (z. B. HEIC) Original senden. */
+async function compressImage(file: File): Promise<File> {
+  if (!file.type.startsWith("image/")) return file;
+  try {
+    const bitmap = await createImageBitmap(file);
+    const max = 1600;
+    const scale = Math.min(1, max / Math.max(bitmap.width, bitmap.height));
+    const w = Math.round(bitmap.width * scale);
+    const h = Math.round(bitmap.height * scale);
+    const canvas = document.createElement("canvas");
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return file;
+    ctx.drawImage(bitmap, 0, 0, w, h);
+    const blob = await new Promise<Blob | null>((resolve) =>
+      canvas.toBlob(resolve, "image/jpeg", 0.82)
+    );
+    if (!blob || blob.size >= file.size) return file;
+    return new File([blob], file.name.replace(/\.\w+$/, "") + ".jpg", {
+      type: "image/jpeg",
+    });
+  } catch {
+    return file;
+  }
+}
+
 export function BookingForm() {
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">(
     "idle"
@@ -23,13 +53,14 @@ export function BookingForm() {
     e.preventDefault();
     setStatus("sending");
     const form = e.currentTarget;
-    const data = Object.fromEntries(new FormData(form).entries());
     try {
-      const res = await fetch("/api/booking", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...data, fileCount: files.length }),
-      });
+      const data = new FormData(form);
+      // Original-Dateien durch verkleinerte Versionen ersetzen
+      data.delete("images");
+      const compressed = await Promise.all(files.map(compressImage));
+      for (const f of compressed) data.append("images", f);
+
+      const res = await fetch("/api/booking", { method: "POST", body: data });
       if (!res.ok) throw new Error("Fehler");
       setStatus("success");
       form.reset();
@@ -75,6 +106,11 @@ export function BookingForm() {
       onSubmit={handleSubmit}
       className="rounded-2xl border border-white/10 bg-ink-800/40 p-6 sm:p-8"
     >
+      {/* Honeypot-Spamschutz: für Menschen unsichtbar, Bots füllen es aus */}
+      <div aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
+        <label htmlFor="b-website">Website</label>
+        <input id="b-website" name="website" type="text" tabIndex={-1} autoComplete="off" />
+      </div>
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Name" htmlFor="name" required>
           <Input id="name" name="name" required placeholder="Max Mustermann" autoComplete="name" />
@@ -118,7 +154,7 @@ export function BookingForm() {
           <Input id="date" name="date" type="date" />
         </Field>
         <Field label="Bilder der Felgen" htmlFor="images" className="sm:col-span-1">
-          {/* Upload: aktuell clientseitig erfasst – später an Storage anbinden */}
+          {/* Bilder werden mit der Anfrage als E-Mail-Anhang übermittelt */}
           <label
             htmlFor="images"
             className="flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-dashed border-white/15 bg-ink-900 px-4 py-3 text-sm text-chrome-400 transition hover:border-crimson/50 hover:text-chrome-200"
@@ -126,7 +162,9 @@ export function BookingForm() {
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
               <path d="M12 5v14M5 12h14" />
             </svg>
-            {files.length > 0 ? `${files.length} Datei(en)` : "Bilder auswählen"}
+            {files.length > 0
+              ? `${files.length} Bild${files.length > 1 ? "er" : ""} ausgewählt`
+              : "Bilder auswählen"}
           </label>
           <input
             id="images"
@@ -135,8 +173,13 @@ export function BookingForm() {
             accept="image/*"
             multiple
             className="hidden"
-            onChange={(e) => setFiles(Array.from(e.target.files ?? []))}
+            onChange={(e) =>
+              setFiles(Array.from(e.target.files ?? []).slice(0, MAX_FILES))
+            }
           />
+          <p className="mt-1.5 text-[11px] text-chrome-600">
+            Max. {MAX_FILES} Bilder – werden mit der Anfrage übermittelt.
+          </p>
         </Field>
         <Field label="Nachricht" htmlFor="message" className="sm:col-span-2">
           <Textarea id="message" name="message" placeholder="Beschreibe kurz dein Anliegen …" />

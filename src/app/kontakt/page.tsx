@@ -143,20 +143,36 @@ export default function KontaktPage() {
               </div>
             </div>
 
-            {/* Formular + Karte */}
+            {/* Formular + Anfahrt */}
             <div className="space-y-8">
               <ContactForm />
-              {/* Karten-Platzhalter: später Google Maps / OpenStreetMap-Embed einsetzen */}
-              <div className="relative flex aspect-[16/7] items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-ink-900">
+              {/* Anfahrt: bewusst kein Karten-Embed (Datenschutz – siehe
+                  Datenschutzerklärung), stattdessen Link zu Google Maps */}
+              <div className="relative flex aspect-[16/7] flex-col items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-ink-900 p-8 text-center">
                 <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(225,29,42,0.1),transparent_60%)]" />
-                <div className="text-center">
-                  <p className="font-display text-2xl font-bold uppercase text-chrome-400">
-                    Köln
-                  </p>
-                  <p className="mt-1 text-xs uppercase tracking-widest text-chrome-600">
-                    Karten-Embed folgt (Platzhalter)
-                  </p>
-                </div>
+                <p className="relative font-display text-2xl font-bold uppercase text-chrome-200">
+                  So findest du uns
+                </p>
+                <p className="relative mt-2 text-sm text-chrome-400">
+                  {site.address.street} · {site.address.zip} {site.address.city}
+                </p>
+                <a
+                  href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
+                    `${site.address.street}, ${site.address.zip} ${site.address.city}`
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="relative mt-6 inline-flex items-center gap-2 rounded-full bg-crimson px-7 py-3.5 font-display text-sm font-medium uppercase tracking-widest text-white shadow-glow transition hover:bg-crimson-bright"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+                    <circle cx="12" cy="10" r="3" />
+                  </svg>
+                  Route planen
+                </a>
+                <p className="relative mt-3 text-[11px] text-chrome-600">
+                  Öffnet Google Maps in einem neuen Tab.
+                </p>
               </div>
             </div>
           </div>

@@ -149,6 +149,7 @@ export default function DatenschutzPage() {
                 <li>gewünschte Leistung</li>
                 <li>Wunschtermin</li>
                 <li>Nachricht</li>
+                <li>freiwillig hochgeladene Bilder der Felgen</li>
               </ul>
               <p>
                 Die Verarbeitung erfolgt zur Bearbeitung Ihrer Anfrage und zur
