@@ -7,6 +7,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { CartProvider } from "@/components/cart/CartProvider";
 import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
+import { Analytics } from "@vercel/analytics/next";
 
 /**
  * Schriften (self-hosted via next/font, kein externer Runtime-Request).
@@ -88,6 +89,9 @@ export default function RootLayout({
           <WhatsAppButton />
           {/* CartDrawer ausgeblendet, bis der Shop startet (Coming Soon) */}
         </CartProvider>
+        {/* Vercel Web Analytics – cookielose Besucherstatistik.
+            Aktivierung im Vercel-Dashboard unter „Analytics". */}
+        <Analytics />
       </body>
     </html>
   );
