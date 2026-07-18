@@ -50,14 +50,23 @@ export function fieldsToHtml(fields: Array<[label: string, value: unknown]>) {
  * Wirft bei einem echten Versandfehler, damit die Route 500 liefert und
  * der Nutzer im Formular eine Fehlermeldung sieht.
  */
+export type MailAttachment = {
+  /** Dateiname im Postfach, z. B. "felge-1.jpg" */
+  filename: string;
+  /** Dateiinhalt Base64-kodiert (Resend-Format) */
+  content: string;
+};
+
 export async function sendMail({
   subject,
   html,
   replyTo,
+  attachments,
 }: {
   subject: string;
   html: string;
   replyTo?: string;
+  attachments?: MailAttachment[];
 }): Promise<"sent" | "skipped"> {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
@@ -80,6 +89,7 @@ export async function sendMail({
       subject,
       html,
       ...(replyTo ? { reply_to: replyTo } : {}),
+      ...(attachments && attachments.length > 0 ? { attachments } : {}),
     }),
   });
 

@@ -11,6 +11,11 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
 
+    // Spamschutz (Honeypot): verstecktes Feld ausgefüllt → Bot, still verwerfen
+    if (body?.website) {
+      return NextResponse.json({ ok: true, message: "Nachricht erhalten." });
+    }
+
     if (!body?.name || !body?.email || !body?.message) {
       return NextResponse.json(
         { ok: false, error: "Name, E-Mail und Nachricht sind erforderlich." },

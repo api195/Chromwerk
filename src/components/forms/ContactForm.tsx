@@ -7,8 +7,8 @@ import { Button } from "@/components/ui/Button";
 
 /**
  * ContactForm – allgemeines Kontaktformular.
- * Sendet an /api/contact (Platzhalter-Endpoint). Dort später
- * E-Mail-Versand / Datenbank ergänzen.
+ * Sendet an /api/contact; von dort geht die Nachricht per E-Mail
+ * (Resend) an den Betreiber.
  */
 export function ContactForm() {
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">(
@@ -61,6 +61,11 @@ export function ContactForm() {
       onSubmit={handleSubmit}
       className="rounded-2xl border border-white/10 bg-ink-800/40 p-6 sm:p-8"
     >
+      {/* Honeypot-Spamschutz: für Menschen unsichtbar, Bots füllen es aus */}
+      <div aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
+        <label htmlFor="c-website">Website</label>
+        <input id="c-website" name="website" type="text" tabIndex={-1} autoComplete="off" />
+      </div>
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Name" htmlFor="c-name" required>
           <Input id="c-name" name="name" required placeholder="Dein Name" autoComplete="name" />
