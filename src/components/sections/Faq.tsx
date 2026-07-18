@@ -1,0 +1,79 @@
+"use client";
+
+import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { cn } from "@/lib/utils";
+
+/**
+ * Faq – aufklappbare Fragen & Antworten (Akkordeon).
+ * Inhalte unten in FAQ_ITEMS pflegen.
+ */
+const FAQ_ITEMS: { q: string; a: string }[] = [
+  {
+    q: "Was kostet die Hochglanzverdichtung?",
+    a: "Ein kompletter Satz (4 Felgen) kostet 500 € – inklusive keramischer Versiegelung. Schick uns einfach Bilder deiner Felgen über das Formular, dann bekommst du eine verbindliche Einschätzung.",
+  },
+  {
+    q: "Wie lange dauert die Bearbeitung?",
+    a: "Je nach Zustand der Felgen in der Regel wenige Werktage. Den genauen Zeitrahmen nennen wir dir mit der Terminbestätigung – verbindlich und ohne Überraschungen.",
+  },
+  {
+    q: "Wie lange hält der Spiegelglanz?",
+    a: "Die keramische Versiegelung schützt die verdichtete Oberfläche dauerhaft im Alltag. Mit der richtigen Pflege – pH-neutrale Reiniger statt aggressiver Felgenreiniger – bleibt der Glanz langfristig erhalten.",
+  },
+  {
+    q: "Für welche Felgen ist das geeignet?",
+    a: "Für die meisten Alufelgen – ob neu, gebraucht oder mit Gebrauchsspuren. Auch Bordsteinschäden können vor der Verdichtung aufbereitet werden. Schick uns Bilder, wir sagen dir ehrlich, was möglich ist.",
+  },
+];
+
+function FaqItem({ q, a }: { q: string; a: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="overflow-hidden rounded-2xl border border-white/10 bg-ink-800/40">
+      <button
+        onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
+        className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left"
+      >
+        <span className="font-display text-sm font-semibold uppercase tracking-wide text-chrome-100 sm:text-base">
+          {q}
+        </span>
+        <span
+          className={cn(
+            "flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/10 text-chrome-300 transition-transform duration-300",
+            open && "rotate-45 border-crimson/50 text-crimson"
+          )}
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M12 5v14M5 12h14" />
+          </svg>
+        </span>
+      </button>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <p className="px-6 pb-6 text-sm leading-relaxed text-chrome-400">
+              {a}
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+export function Faq() {
+  return (
+    <div className="space-y-3">
+      {FAQ_ITEMS.map((item) => (
+        <FaqItem key={item.q} q={item.q} a={item.a} />
+      ))}
+    </div>
+  );
+}
