@@ -5,9 +5,9 @@ import { ContactForm } from "@/components/forms/ContactForm";
 import { site } from "@/data/site";
 
 export const metadata: Metadata = {
-  title: "Kontakt",
+  title: "Kontakt – Felgenveredelung in Köln",
   description:
-    "Kontaktiere Chromwerk Köln – per Formular, Telefon oder E-Mail. Standort Köln. Wir freuen uns auf deine Nachricht.",
+    "Kontaktiere Chromwerk in Köln (Reutlinger Str. 37) – per Formular, WhatsApp, Telefon oder E-Mail. Hochglanzverdichtung & Felgenaufbereitung. Mo–So 10–22 Uhr.",
 };
 
 /** Inline-Icons für die Kontaktkacheln. */
