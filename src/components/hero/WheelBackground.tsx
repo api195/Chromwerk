@@ -23,8 +23,10 @@ export function WheelBackground() {
     const force = params.get("wheel"); // "1" erzwingen, "0" abschalten (Debug/Escape)
     if (force === "0") return setRender3D(false);
     if (force === "1") return setRender3D(isWebGLAvailable());
-    setRender3D(device.tier === "high" && isWebGLAvailable());
-  }, [device.tier]);
+    // 3D auf Desktop UND Handy laden (mobil in leichter Variante).
+    // Nur bei "reduzierte Bewegung" oder fehlendem WebGL bleibt es statisch.
+    setRender3D(!device.reduced && isWebGLAvailable());
+  }, [device.reduced]);
 
   // Statischer Fallback-Hintergrund (immer vorhanden – auch als Ladehintergrund)
   return (
@@ -39,7 +41,8 @@ export function WheelBackground() {
       />
       {render3D && (
         <div className="pointer-events-none fixed inset-0 z-0">
-          <ChromeRimScroll />
+          {/* Auf schwächeren/mobilen Geräten leichte Variante (kein Bloom/Schatten) */}
+          <ChromeRimScroll lite={device.tier === "low"} />
         </div>
       )}
     </>

@@ -53,9 +53,11 @@ const _spin = new THREE.Quaternion();
 function Rim({
   scroll,
   onReady,
+  lite = false,
 }: {
   scroll: React.MutableRefObject<number>;
   onReady?: () => void;
+  lite?: boolean;
 }) {
   const group = useRef<THREE.Object3D>(null);
   const shadow = useRef<THREE.Group>(null);
@@ -73,7 +75,7 @@ function Rim({
       const mesh = o as THREE.Mesh;
       if (mesh.isMesh) {
         mesh.material = chromeMaterial;
-        mesh.castShadow = true;
+        mesh.castShadow = !lite;
       }
     });
     const box = new THREE.Box3().setFromObject(scene);
@@ -110,9 +112,11 @@ function Rim({
   return (
     <>
       <primitive ref={group} object={scene} />
-      <group ref={shadow}>
-        <ContactShadows position={[0, -1.85, 0]} opacity={0.55} scale={9} blur={2.6} far={3.2} />
-      </group>
+      {!lite && (
+        <group ref={shadow}>
+          <ContactShadows position={[0, -1.85, 0]} opacity={0.55} scale={9} blur={2.6} far={3.2} />
+        </group>
+      )}
     </>
   );
 }
@@ -142,7 +146,7 @@ function NeonStrip({
   );
 }
 
-export default function ChromeRimScroll() {
+export default function ChromeRimScroll({ lite = false }: { lite?: boolean }) {
   const scroll = useScrollProgress();
   // Weiches Einblenden, sobald das Modell geladen ist (kein hartes Aufploppen)
   const [ready, setReady] = useState(false);
@@ -159,19 +163,21 @@ export default function ChromeRimScroll() {
       }}
     >
       <Canvas
-        shadows
+        shadows={!lite}
         camera={{ position: [0, 0.9, 6.2], fov: 38 }}
         gl={{
-          antialias: true,
+          antialias: !lite,
           toneMapping: THREE.ACESFilmicToneMapping,
           outputColorSpace: THREE.SRGBColorSpace,
+          powerPreference: "high-performance",
         }}
-        dpr={[1, 2]}
+        // Auf schwächeren/mobilen Geräten geringere Pixeldichte = deutlich schneller
+        dpr={lite ? [1, 1.5] : [1, 2]}
       >
         <color attach="background" args={["#050507"]} />
         <fog attach="fog" args={["#050507", 9, 22]} />
 
-        <Environment resolution={512}>
+        <Environment resolution={lite ? 256 : 512}>
           <Lightformer intensity={16} color="#dbeaff" position={[2.5, 5, 2]} scale={[9, 0.3, 1]} />
           <Lightformer intensity={10} color="#cce0ff" position={[-6, 1.2, 1]} scale={[11, 0.28, 1]} />
           <Lightformer intensity={6} color="#b8d2ff" position={[4.5, -2.5, -2]} scale={[8, 0.22, 1]} />
@@ -185,23 +191,26 @@ export default function ChromeRimScroll() {
         </Environment>
 
         <directionalLight
-          castShadow
+          castShadow={!lite}
           intensity={0.25}
           color="#dfe9ff"
           position={[4, 7, 5]}
-          shadow-mapSize={[2048, 2048]}
+          shadow-mapSize={[1024, 1024]}
         />
         <directionalLight intensity={0.15} color="#9db8ff" position={[-5, 2, -4]} />
         <ambientLight intensity={0.02} color="#aebfdd" />
 
-        <Rim scroll={scroll} onReady={() => setReady(true)} />
+        <Rim scroll={scroll} onReady={() => setReady(true)} lite={lite} />
 
         <NeonStrip position={[2.2, 2.8, -4.5]} rotation={[0, -0.25, 0.05]} size={[8, 0.04]} color="#dbeaff" intensity={1.8} />
         <NeonStrip position={[-4.4, 0.2, -3.8]} rotation={[0, 0.5, 0]} size={[6, 0.035]} color="#cce0ff" intensity={1.5} />
 
-        <EffectComposer>
-          <Bloom intensity={0.28} luminanceThreshold={1.15} luminanceSmoothing={0.25} mipmapBlur />
-        </EffectComposer>
+        {/* Bloom ist teuer – nur auf Desktop/leistungsfähigen Geräten */}
+        {!lite && (
+          <EffectComposer>
+            <Bloom intensity={0.28} luminanceThreshold={1.15} luminanceSmoothing={0.25} mipmapBlur />
+          </EffectComposer>
+        )}
       </Canvas>
     </div>
   );
