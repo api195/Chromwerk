@@ -33,7 +33,7 @@ export function BeforeAfter({
     <div
       ref={containerRef}
       className={cn(
-        "relative aspect-[4/3] w-full select-none overflow-hidden rounded-2xl border border-white/10 bg-ink-900",
+        "relative mx-auto aspect-square w-full select-none overflow-hidden rounded-2xl border border-white/10 bg-black",
         className
       )}
       onPointerDown={(e) => {
@@ -45,7 +45,7 @@ export function BeforeAfter({
       onPointerLeave={() => (dragging.current = false)}
     >
       {/* Nachher (Hintergrund) */}
-      <Image src={after} alt="Nachher" fill className="object-cover" sizes="100vw" />
+      <Image src={after} alt="Nachher" fill className="object-contain" sizes="100vw" />
       <span className="absolute right-3 top-3 rounded-full bg-ink-950/70 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-emerald-300 backdrop-blur">
         Nachher
       </span>
@@ -56,7 +56,7 @@ export function BeforeAfter({
         style={{ width: `${pos}%` }}
       >
         <div className="relative h-full" style={{ width: containerRef.current?.clientWidth ?? "100%" }}>
-          <Image src={before} alt="Vorher" fill className="object-cover" sizes="100vw" />
+          <Image src={before} alt="Vorher" fill className="object-contain" sizes="100vw" />
         </div>
         <span className="absolute left-3 top-3 rounded-full bg-ink-950/70 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-chrome-300 backdrop-blur">
           Vorher

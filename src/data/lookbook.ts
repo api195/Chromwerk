@@ -1,188 +1,135 @@
 import type { LookbookProject } from "@/types";
-import { site } from "@/data/site";
-
-// Bis echte Projektfotos vorliegen, nutzt das erste Projekt die Hero-Felge.
-const HERO = site.heroImage;
 
 /**
- * Lookbook / Ergebnisse – Vorher-/Nachher-Projekte.
+ * Lookbook / Ergebnisse – echte Vorher-/Nachher-Projekte.
  * ------------------------------------------------------------------
  * Neues Projekt einpflegen: Objekt kopieren, `slug` eindeutig vergeben
- * und Bilder in /public/images/lookbook/ ablegen.
+ * und Bilder (vorher/nachher) in /public/images/lookbook/ ablegen.
  * Die Detailseite /lookbook/[slug] wird automatisch generiert.
+ *
+ * Hinweis: Marken-, Größen- und Fahrzeugangaben sind sinnvoll vorbelegt –
+ * bitte bei Bedarf an die echten Daten anpassen.
  */
 export const lookbookProjects: LookbookProject[] = [
   {
-    slug: "yido-yp-forged-chrom",
-    title: "Yido Performance YP Forged – Chrom-Hochglanz",
+    slug: "yido-mehrteilig-chrom",
+    title: "Yido Performance – Mehrteilig in Chrom",
     brand: "Yido Performance",
-    model: "YP Forged",
+    model: "Forged Mehrteilig",
     size: 21,
     wheelType: "Mehrspeiche",
     vehicle: "Universal",
-    condition: "Neu",
+    condition: "Aufbereitet",
     finish: "Chrom-Hochglanz",
     summary:
-      "Geschmiedete Mehrspeiche in tiefem Chrom-Hochglanz – kompromissloser Spiegeleffekt.",
+      "Mattschwarze Schmiedefelge, verwandelt in tiefen Chrom-Hochglanz.",
     description:
-      "Ein geschmiedeter Yido Performance YP-Satz, veredelt in tiefem Chrom-Hochglanz. Jede Speiche wurde mehrstufig verdichtet, bis Licht und Umgebung vollständig in der Oberfläche gespiegelt werden.",
-    // Vorher-Bild (matte Version) folgt – sobald vorhanden, hier ergänzen:
-    // beforeImages: ["/images/lookbook/yido-yp-forged-schwarz.webp"],
-    beforeImages: [],
-    afterImages: ["/images/lookbook/yido-yp-forged-chrom.webp"],
-    coverImage: "/images/lookbook/yido-yp-forged-chrom.webp",
+      "Eine mehrteilige, geschmiedete Yido-Performance-Felge kam in mattem Schwarz zu uns. Nach mehrstufiger Hochglanzverdichtung spiegelt die Oberfläche ihre Umgebung in voller Chromtiefe.",
+    beforeImages: ["/images/lookbook/yido-mehrteilig-vorher.webp"],
+    afterImages: ["/images/lookbook/yido-mehrteilig-nachher.webp"],
+    coverImage: "/images/lookbook/yido-mehrteilig-nachher.webp",
     steps: [
       { title: "Zustandsanalyse", text: "Vermessung der Oberfläche und Glanzgradbestimmung." },
-      { title: "Feinschliff", text: "Speichen und Stern stufenweise in Handarbeit vorbereitet." },
+      { title: "Feinschliff", text: "Speichen und Bett stufenweise in Handarbeit vorbereitet." },
       { title: "Verdichtung", text: "Mehrstufige mechanische Hochglanzverdichtung bis zur Chromtiefe." },
       { title: "Versiegelung", text: "Keramische Schutzschicht für dauerhaften Glanz." },
     ],
     wheelData: [
       { label: "Zollgröße", value: "21 Zoll" },
-      { label: "Bauart", value: "Geschmiedet (Forged)" },
+      { label: "Bauart", value: "Geschmiedet, mehrteilig" },
       { label: "Finish", value: "Chrom-Hochglanz" },
-      { label: "Design", value: "Mehrspeiche" },
+      { label: "Ausgangszustand", value: "Mattschwarz" },
     ],
-    clientNote: "Maximale Spiegelwirkung bei erhaltener Speichenkontur gewünscht.",
     durationDays: 5,
   },
-];
-
-/**
- * ARCHIV / VORLAGEN – nicht auf der Website sichtbar.
- * ------------------------------------------------------------------
- * Beispiel-Projekte mit Platzhalter-Bildern. Sobald echte Fotos da sind:
- * Objekt nach oben in `lookbookProjects` verschieben und Bildpfade ersetzen.
- */
-export const lookbookDrafts: LookbookProject[] = [
   {
-    slug: "bbs-chr-audi-rs6",
-    title: "BBS CH-R – Audi RS6",
-    brand: "BBS",
-    model: "CH-R",
-    size: 21,
+    slug: "yido-forged-chrom",
+    title: "Yido Performance – Forged in Chrom",
+    brand: "Yido Performance",
+    model: "Forged",
+    size: 20,
     wheelType: "Y-Speiche",
-    vehicle: "Audi",
-    condition: "Gebraucht",
-    finish: "Hochglanzverdichtet Silber",
-    summary:
-      "Stark beanspruchter Satz mit Bordsteinschäden – zurück in spiegelnden Hochglanz verwandelt.",
+    vehicle: "Universal",
+    condition: "Aufbereitet",
+    finish: "Chrom-Hochglanz",
+    summary: "Dunkle Schmiedefelge, veredelt zu spiegelndem Chromglanz.",
     description:
-      "Dieser BBS CH-R Satz eines Audi RS6 kam mit mehreren Bordsteinschäden und stumpfer Oberfläche zu uns. Nach vollständiger Aufbereitung und mehrstufiger Hochglanzverdichtung strahlen die Felgen in tiefem Chromglanz.",
-    beforeImages: [
-      "/images/lookbook/before-placeholder.svg",
-      "/images/lookbook/before-placeholder.svg",
-    ],
-    afterImages: [HERO, "/images/lookbook/after-placeholder.svg"],
-    coverImage: HERO,
+      "Diese geschmiedete Yido-Performance-Felge erhielt eine vollständige Hochglanzverdichtung. Aus dem matten Ausgangszustand wurde eine tiefe, spiegelnde Chromoberfläche.",
+    beforeImages: ["/images/lookbook/yido-forged-vorher.webp"],
+    afterImages: ["/images/lookbook/yido-forged-nachher.webp"],
+    coverImage: "/images/lookbook/yido-forged-nachher.webp",
     steps: [
-      { title: "Zustandsanalyse", text: "Vermessung, Rissprüfung und Dokumentation aller Schäden." },
-      { title: "Reparatur", text: "Bordsteinschäden aufgefüllt und plan geschliffen." },
-      { title: "Verdichtung", text: "Mehrstufige mechanische Hochglanzverdichtung." },
-      { title: "Versiegelung", text: "Keramische Schutzschicht für Langzeitglanz." },
+      { title: "Analyse", text: "Oberflächenprüfung und Dokumentation." },
+      { title: "Schliff", text: "Speichen und Stern in Handarbeit vorbereitet." },
+      { title: "Hochglanz", text: "Mehrstufige Verdichtung bis zur Chromtiefe." },
+      { title: "Schutz", text: "Keramische Versiegelung gegen Bremsstaub." },
     ],
     wheelData: [
-      { label: "Zollgröße", value: "21 Zoll" },
-      { label: "Lochkreis", value: "5x112" },
-      { label: "Finish", value: "Hochglanzverdichtet Silber" },
-      { label: "Fahrzeug", value: "Audi RS6" },
+      { label: "Zollgröße", value: "20 Zoll" },
+      { label: "Bauart", value: "Geschmiedet (Forged)" },
+      { label: "Finish", value: "Chrom-Hochglanz" },
+      { label: "Ausgangszustand", value: "Dunkel matt" },
     ],
-    clientNote:
-      "Kunde wünschte maximale Spiegelwirkung bei erhaltener Originaloptik.",
-    durationDays: 5,
+    durationDays: 4,
   },
   {
-    slug: "oz-superturismo-bmw-m3",
-    title: "OZ Superturismo – BMW M3",
-    brand: "OZ Racing",
-    model: "Superturismo",
-    size: 19,
+    slug: "bmw-m-chrom",
+    title: "BMW M – Sternspeiche in Chrom",
+    brand: "BMW M",
+    model: "Sternspeiche",
+    size: 20,
     wheelType: "Mehrspeiche",
     vehicle: "BMW",
     condition: "Aufbereitet",
     finish: "Chrom-Hochglanz",
-    summary:
-      "Klassischer Motorsport-Look, veredelt zu voller Chromtiefe.",
+    summary: "Mattschwarze BMW-M-Felge, veredelt zu vollem Chromglanz.",
     description:
-      "Der OZ Superturismo eines BMW M3 wurde behutsam aufbereitet und anschließend hochglanzverdichtet. Die feinen Speichen erhielten dabei besondere Aufmerksamkeit für ein makelloses Spiegelbild.",
-    beforeImages: ["/images/lookbook/before-placeholder.svg"],
-    afterImages: [
-      "/images/lookbook/after-placeholder.svg",
-      "/images/lookbook/after-placeholder.svg",
-    ],
-    coverImage: "/images/lookbook/cover-placeholder.svg",
+      "Eine originale BMW-M-Felge in Mattschwarz wurde bei uns hochglanzverdichtet. Die filigranen Speichen erhielten dabei besondere Aufmerksamkeit für ein makelloses Spiegelbild.",
+    beforeImages: ["/images/lookbook/bmw-m-vorher.webp"],
+    afterImages: ["/images/lookbook/bmw-m-nachher.webp"],
+    coverImage: "/images/lookbook/bmw-m-nachher.webp",
     steps: [
-      { title: "Demontage", text: "Reifen ab, Felgen einzeln vorbereitet." },
+      { title: "Zustandsanalyse", text: "Vermessung und Dokumentation der Oberfläche." },
       { title: "Feinschliff", text: "Speichen und Stern in Handarbeit bearbeitet." },
-      { title: "Verdichtung", text: "Hochglanzverdichtung bis zur Chromtiefe." },
+      { title: "Verdichtung", text: "Mehrstufige Hochglanzverdichtung bis zur Chromtiefe." },
+      { title: "Versiegelung", text: "Keramische Schutzschicht für Langzeitglanz." },
     ],
     wheelData: [
-      { label: "Zollgröße", value: "19 Zoll" },
-      { label: "Lochkreis", value: "5x120" },
+      { label: "Zollgröße", value: "20 Zoll" },
+      { label: "Fahrzeug", value: "BMW M" },
       { label: "Finish", value: "Chrom-Hochglanz" },
-      { label: "Fahrzeug", value: "BMW M3" },
+      { label: "Ausgangszustand", value: "Mattschwarz" },
     ],
-    clientNote: "Originalfarbe erhalten, maximaler Glanz gewünscht.",
-    durationDays: 4,
+    durationDays: 5,
   },
   {
-    slug: "vossen-hf5-porsche",
-    title: "Vossen HF-5 – Porsche 911",
-    brand: "Vossen",
-    model: "HF-5",
-    size: 21,
-    wheelType: "Concave",
-    vehicle: "Porsche",
-    condition: "Wie neu",
-    finish: "Poliert Chrom",
-    summary: "Concave-Design mit maximaler Reflexionstiefe veredelt.",
+    slug: "yido-y-speiche-chrom",
+    title: "Yido Performance – Y-Speiche in Chrom",
+    brand: "Yido Performance",
+    model: "Y-Speiche",
+    size: 20,
+    wheelType: "Y-Speiche",
+    vehicle: "Universal",
+    condition: "Aufbereitet",
+    finish: "Chrom-Hochglanz",
+    summary: "Sportliche Y-Speiche, verdichtet zu tiefem Spiegelglanz.",
     description:
-      "Für diesen Porsche 911 verdichteten wir einen Satz Vossen HF-5. Das concave Design wurde so bearbeitet, dass Licht und Umgebung tief in der Oberfläche gespiegelt werden.",
-    beforeImages: ["/images/lookbook/before-placeholder.svg"],
-    afterImages: ["/images/lookbook/after-placeholder.svg"],
-    coverImage: "/images/lookbook/cover-placeholder.svg",
+      "Eine Yido-Performance-Felge im Y-Speichen-Design wurde vom matten Ausgangszustand in tiefen Chrom-Hochglanz verwandelt. Licht und Umgebung spiegeln sich vollständig in der Oberfläche.",
+    beforeImages: ["/images/lookbook/yido-yspeiche-vorher.webp"],
+    afterImages: ["/images/lookbook/yido-yspeiche-nachher.webp"],
+    coverImage: "/images/lookbook/yido-yspeiche-nachher.webp",
     steps: [
       { title: "Analyse", text: "Oberflächenprüfung und Glanzgradmessung." },
-      { title: "Politur", text: "Stufenweise Politur der Concave-Flächen." },
-      { title: "Hochglanz", text: "Finale Verdichtung für Spiegeleffekt." },
-      { title: "Schutz", text: "Versiegelung gegen Bremsstaub." },
+      { title: "Schliff", text: "Y-Speichen stufenweise in Handarbeit bearbeitet." },
+      { title: "Hochglanz", text: "Mehrstufige Verdichtung für den Spiegeleffekt." },
+      { title: "Schutz", text: "Keramische Versiegelung für dauerhaften Glanz." },
     ],
     wheelData: [
-      { label: "Zollgröße", value: "21 Zoll" },
-      { label: "Lochkreis", value: "5x130" },
-      { label: "Finish", value: "Poliert Chrom" },
-      { label: "Fahrzeug", value: "Porsche 911" },
-    ],
-    durationDays: 6,
-  },
-  {
-    slug: "bbs-lm-e30",
-    title: "BBS LM – BMW E30",
-    brand: "BBS",
-    model: "LM",
-    size: 17,
-    wheelType: "Mesh",
-    vehicle: "BMW",
-    condition: "Gebraucht",
-    finish: "Chrom-Hochglanz",
-    summary: "Youngtimer-Klassiker mit frischer Chromtiefe.",
-    description:
-      "Ein Satz BBS LM für einen BMW E30 – der Mesh-Klassiker schlechthin. Nach vollständiger Aufbereitung erhielten Stern und Bett eine tiefe Hochglanzverdichtung.",
-    beforeImages: ["/images/lookbook/before-placeholder.svg"],
-    afterImages: ["/images/lookbook/after-placeholder.svg"],
-    coverImage: "/images/lookbook/cover-placeholder.svg",
-    steps: [
-      { title: "Zerlegung", text: "Mehrteilige Felge komplett zerlegt." },
-      { title: "Bett-Politur", text: "Aluminiumbett hochglanzverdichtet." },
-      { title: "Montage", text: "Neu verschraubt und abgedichtet." },
-    ],
-    wheelData: [
-      { label: "Zollgröße", value: "17 Zoll" },
-      { label: "Lochkreis", value: "4x100" },
+      { label: "Zollgröße", value: "20 Zoll" },
+      { label: "Design", value: "Y-Speiche" },
       { label: "Finish", value: "Chrom-Hochglanz" },
-      { label: "Fahrzeug", value: "BMW E30" },
+      { label: "Ausgangszustand", value: "Dunkel matt" },
     ],
-    clientNote: "Mehrteilige Felge, Bett in Hochglanz, Stern in Wagenfarbe.",
-    durationDays: 7,
+    durationDays: 4,
   },
 ];
