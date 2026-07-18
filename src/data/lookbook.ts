@@ -178,18 +178,3 @@ export const lookbookProjects: LookbookProject[] = [
   },
 ];
 
-export const lookbookVehicles = Array.from(
-  new Set(lookbookProjects.map((p) => p.vehicle))
-).sort();
-export const lookbookWheelTypes = Array.from(
-  new Set(lookbookProjects.map((p) => p.wheelType))
-).sort();
-export const lookbookSizes = Array.from(
-  new Set(lookbookProjects.map((p) => p.size))
-).sort((a, b) => a - b);
-export const lookbookConditions = Array.from(
-  new Set(lookbookProjects.map((p) => p.condition))
-);
-export const lookbookFinishes = Array.from(
-  new Set(lookbookProjects.map((p) => p.finish))
-).sort();
