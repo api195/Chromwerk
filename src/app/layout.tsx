@@ -6,6 +6,7 @@ import { SmoothScroll } from "@/components/layout/SmoothScroll";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { CartProvider } from "@/components/cart/CartProvider";
+import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
 
 /**
  * Schriften (self-hosted via next/font, kein externer Runtime-Request).
@@ -84,6 +85,7 @@ export default function RootLayout({
             <main className="min-h-screen">{children}</main>
             <Footer />
           </SmoothScroll>
+          <WhatsAppButton />
           {/* CartDrawer ausgeblendet, bis der Shop startet (Coming Soon) */}
         </CartProvider>
       </body>

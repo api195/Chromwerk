@@ -14,6 +14,8 @@ export const site = {
   description:
     "Chromwerk aus Köln ist spezialisiert auf Hochglanzverdichtung, Aufbereitung und Veredelung von Felgen. Premium-Portfolio, Felgen-Shop, eigene Pflegeprodukte und Online-Terminbuchung.",
   phone: "0179 2693001",
+  /** WhatsApp-Nummer im internationalen Format (für wa.me-Links) */
+  whatsapp: "491792693001",
   email: "info@chromwerk.org",
   address: {
     street: "Reutlinger Str. 37",

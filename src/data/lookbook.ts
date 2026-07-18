@@ -46,6 +46,15 @@ export const lookbookProjects: LookbookProject[] = [
     clientNote: "Maximale Spiegelwirkung bei erhaltener Speichenkontur gewünscht.",
     durationDays: 5,
   },
+];
+
+/**
+ * ARCHIV / VORLAGEN – nicht auf der Website sichtbar.
+ * ------------------------------------------------------------------
+ * Beispiel-Projekte mit Platzhalter-Bildern. Sobald echte Fotos da sind:
+ * Objekt nach oben in `lookbookProjects` verschieben und Bildpfade ersetzen.
+ */
+export const lookbookDrafts: LookbookProject[] = [
   {
     slug: "bbs-chr-audi-rs6",
     title: "BBS CH-R – Audi RS6",
@@ -177,4 +186,3 @@ export const lookbookProjects: LookbookProject[] = [
     durationDays: 7,
   },
 ];
-
