@@ -63,7 +63,7 @@ export function LocalBusinessSchema() {
           name: "Hochglanzverdichtung von Felgen (Satz, inkl. Keramikversiegelung)",
         },
         priceCurrency: "EUR",
-        price: "500",
+        price: "600",
       },
       {
         "@type": "Offer",
