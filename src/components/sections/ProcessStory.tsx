@@ -9,12 +9,27 @@ import {
   useTransform,
 } from "framer-motion";
 import { Container } from "@/components/ui/Container";
+import { useMotionPrefs } from "@/lib/useMotionPrefs";
 import { cn } from "@/lib/utils";
 
 /**
  * ProcessStory – Sticky Scroll-Storytelling durch den Chromwerk-Prozess.
  * Jeder Schritt füllt den Bildschirm; beim Scrollen wechselt der aktive
  * Schritt, Inhalte blenden weich über, eine Chrom-Fortschrittslinie füllt sich.
+ *
+ * Performance
+ * ------------------------------------------------------------------
+ * Diese Sektion ist über 400vh hoch und liegt über dem fixierten
+ * 3D-Hintergrund. Sie hatte deshalb den größten Anteil am Ruckeln:
+ *
+ *  • `backdrop-blur-sm` auf der gesamten Fläche zwang den Browser, bei
+ *    JEDEM Scroll-Frame den kompletten Bildschirminhalt (inklusive
+ *    WebGL-Canvas) einzulesen und weichzuzeichnen. Ersetzt durch eine
+ *    deckendere Farbfläche – optisch fast identisch, aber praktisch
+ *    kostenlos.
+ *  • Die riesige Geister-Nummer (42vw!) wurde mit `filter: blur()`
+ *    ein- und ausgeblendet. Bei dieser Fläche ist das extrem teuer;
+ *    jetzt nur noch Opacity + Scale (beides läuft auf der GPU).
  */
 const steps = [
   {
@@ -50,6 +65,7 @@ const steps = [
 export function ProcessStory() {
   const ref = useRef<HTMLElement>(null);
   const [active, setActive] = useState(0);
+  const { rich } = useMotionPrefs();
 
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -67,19 +83,22 @@ export function ProcessStory() {
     <section
       ref={ref}
       id="prozess"
-      className="relative bg-ink-950/65 backdrop-blur-sm"
-      style={{ height: `${steps.length * 62}vh` }}
+      // Deckende Fläche statt backdrop-blur (siehe Kommentar oben).
+      // Höhe pro Schritt kommt aus --process-step (globals.css) und ist auf
+      // schmalen Screens kürzer – weniger Scroll-Strecke, gleiche Wirkung.
+      className="relative bg-ink-950/90"
+      style={{ height: `calc(${steps.length} * var(--process-step, 62vh))` }}
     >
       <div className="sticky top-0 flex h-[100svh] items-center overflow-hidden">
         {/* Riesige Geister-Nummer im Hintergrund */}
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center lg:justify-end lg:pr-[8%]">
-          <AnimatePresence mode="popLayout">
+          <AnimatePresence mode="wait" initial={false}>
             <motion.span
               key={active}
-              initial={{ opacity: 0, scale: 0.9, filter: "blur(8px)" }}
-              animate={{ opacity: 0.06, scale: 1, filter: "blur(0px)" }}
-              exit={{ opacity: 0, scale: 1.05, filter: "blur(8px)" }}
-              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              initial={{ opacity: 0, scale: 0.94 }}
+              animate={{ opacity: 0.06, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.04 }}
+              transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
               className="font-display text-[42vw] font-bold leading-none text-white lg:text-[30vw]"
             >
               {String(active + 1).padStart(2, "0")}
@@ -104,13 +123,27 @@ export function ProcessStory() {
               </div>
 
               <div className="relative mt-3 min-h-[9rem]">
-                <AnimatePresence mode="wait">
+                <AnimatePresence mode="wait" initial={false}>
                   <motion.div
                     key={active}
-                    initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
-                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                    exit={{ opacity: 0, y: -16, filter: "blur(8px)" }}
-                    transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                    // Blur nur auf leistungsfähigen Geräten – auf dem Handy
+                    // reicht Opacity + Verschiebung und läuft deutlich runder.
+                    initial={
+                      rich
+                        ? { opacity: 0, y: 24, filter: "blur(8px)" }
+                        : { opacity: 0, y: 20 }
+                    }
+                    animate={
+                      rich
+                        ? { opacity: 1, y: 0, filter: "blur(0px)" }
+                        : { opacity: 1, y: 0 }
+                    }
+                    exit={
+                      rich
+                        ? { opacity: 0, y: -16, filter: "blur(8px)" }
+                        : { opacity: 0, y: -14 }
+                    }
+                    transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
                   >
                     <h3 className="font-display text-4xl font-bold uppercase leading-tight tracking-tight text-transparent bg-chrome-text bg-clip-text sm:text-5xl lg:text-6xl">
                       {steps[active].title}

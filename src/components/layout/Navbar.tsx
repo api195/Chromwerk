@@ -8,37 +8,37 @@ import { navigation } from "@/data/site";
 import { Logo } from "@/components/logo/Logo";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
+import { subscribeScroll } from "@/lib/scroll";
 import { cn } from "@/lib/utils";
 
 export function Navbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  // Auf der Startseite erscheint die Navigation erst nach dem Hero-Intro.
+  // Navigation blendet kurz mit dem Hero-Intro ein.
   const [revealed, setRevealed] = useState(false);
 
+  // Gemeinsame Scroll-Quelle (ein rAF-gebündelter Listener für die ganze
+  // Seite) statt eines eigenen Handlers pro Komponente.
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return subscribeScroll((y) => setScrolled(y > 24));
   }, []);
 
-  // Sichtbarkeit steuern: außerhalb der Startseite sofort, sonst nach Intro
+  // Sichtbarkeit steuern.
+  //
+  // Früher wartete die Startseite auf ein Event ("chromwerk:hero-ready"),
+  // das nur die inzwischen nicht mehr genutzten Hero-Varianten ausgelöst
+  // haben. Der aktuelle Hero sendet es nicht – die Navigation blieb dadurch
+  // acht Sekunden lang unsichtbar UND nicht anklickbar (pointer-events-none).
+  // Genau so etwas fühlt sich für Besucher wie „die Seite hängt" an.
+  // Jetzt: sofort da, nur mit einer kurzen Einblendung.
   useEffect(() => {
     if (pathname !== "/") {
       setRevealed(true);
       return;
     }
-    setRevealed(false);
-    const onReady = () => setRevealed(true);
-    window.addEventListener("chromwerk:hero-ready", onReady);
-    // Sicherheits-Fallback, falls das Event ausbleibt
-    const fallback = window.setTimeout(() => setRevealed(true), 8000);
-    return () => {
-      window.removeEventListener("chromwerk:hero-ready", onReady);
-      window.clearTimeout(fallback);
-    };
+    const id = window.setTimeout(() => setRevealed(true), 250);
+    return () => window.clearTimeout(id);
   }, [pathname]);
 
   // Menü bei Navigation schließen
@@ -57,9 +57,12 @@ export function Navbar() {
   return (
     <header
       className={cn(
-        "fixed inset-x-0 top-0 z-[60] transition-all duration-700",
+        // Nur die Eigenschaften animieren, die sich wirklich ändern –
+        // `transition-all` würde auch backdrop-filter mit-animieren und
+        // die Leiste bei jedem Scroll-Start neu komponieren lassen.
+        "fixed inset-x-0 top-0 z-[60] transition-[background-color,border-color,opacity,transform] duration-500",
         scrolled
-          ? "border-b border-white/10 bg-ink-950/80 backdrop-blur-xl"
+          ? "border-b border-white/10 bg-ink-950/80 backdrop-blur-md"
           : "border-b border-transparent bg-transparent",
         revealed
           ? "translate-y-0 opacity-100"

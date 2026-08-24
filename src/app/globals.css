@@ -9,15 +9,29 @@
 @layer base {
   :root {
     color-scheme: dark;
+    /* Scroll-Strecke pro Schritt im Prozess-Storytelling (ProcessStory).
+       Auf schmalen Screens kürzer: weniger Scrollen, gleiche Wirkung. */
+    --process-step: 48vh;
+  }
+
+  @media (min-width: 640px) {
+    :root {
+      --process-step: 62vh;
+    }
   }
 
   html {
     scroll-behavior: smooth;
+    /* Verhindert das „Gummiband" am Seitenende, das auf iOS/Android beim
+       schnellen Scrollen als Hänger wahrgenommen wird. */
+    overscroll-behavior-y: none;
   }
 
   body {
     @apply bg-ink-950 text-chrome-100 antialiased;
     font-feature-settings: "ss01", "cv01";
+    /* Kein horizontales Verrutschen durch überstehende Effekte */
+    overflow-x: hidden;
   }
 
   /* Auswahlfarbe */
@@ -131,10 +145,83 @@
 }
 
 
+/* ------------------------------------------------------------------ */
+/* Performance-Regeln                                                  */
+/* ------------------------------------------------------------------ */
+
+/*
+ * `backdrop-filter` ist auf Touch-Geräten der teuerste Effekt der Seite:
+ * Der Browser muss für JEDE unscharfe Fläche bei jedem Scroll-Frame den
+ * Hintergrund erneut einlesen und weichzeichnen. Auf Handy/Tablet wird der
+ * Effekt daher komplett abgeschaltet – die Flächen bleiben halbtransparent
+ * und sehen praktisch identisch aus, das Scrollen wird aber spürbar
+ * flüssiger.
+ */
+@media (pointer: coarse) {
+  .backdrop-blur,
+  .backdrop-blur-sm,
+  .backdrop-blur-md,
+  .backdrop-blur-lg,
+  .backdrop-blur-xl,
+  .backdrop-blur-2xl,
+  .backdrop-blur-3xl,
+  .panel {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  /* Ohne Weichzeichnung braucht die Navigationsleiste etwas mehr Deckkraft,
+     damit der Text darüber gut lesbar bleibt. */
+  header.bg-ink-950\/80 {
+    background-color: rgb(5 5 6 / 0.94);
+  }
+}
+
+/*
+ * Dauerlaufende Verlaufs-Animationen auf Text (background-position) zeichnen
+ * den Text bei jedem Bild neu. Auf Touch-Geräten deshalb aus.
+ */
+@media (pointer: coarse) {
+  .text-chrome-animate,
+  .text-iridescent,
+  .shimmer {
+    animation: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .text-chrome-animate,
   .text-iridescent {
     animation: none;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  /*
+   * Einblend-Animationen (Reveal / SplitReveal / Hero-Intro) hart auf den
+   * Endzustand zwingen. Das muss über CSS laufen, weil framer-motion seine
+   * Startwerte als Inline-Styles setzt – und zwar bevor JavaScript die
+   * Geräte-Einstellungen ausgewertet hat. Ein `!important` im Stylesheet
+   * schlägt Inline-Styles und garantiert damit, dass Inhalte für Nutzer
+   * mit reduzierter Bewegung IMMER sichtbar sind – auch wenn sie nie in
+   * den sichtbaren Bereich gescrollt werden.
+   */
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+
+  /* Alle Übergänge/Animationen auf ein Minimum reduzieren */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
