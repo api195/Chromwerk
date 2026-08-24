@@ -2,56 +2,68 @@
 
 import { useEffect } from "react";
 import Lenis from "lenis";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 /**
- * SmoothScroll – weiches Scrollen (Lenis) + Synchronisation mit GSAP
- * ScrollTrigger, damit gepinnte, scroll-gescrubbte Animationen sauber laufen.
- * Respektiert "prefers-reduced-motion".
+ * SmoothScroll – weiches Scrollen (Lenis) auf Desktop.
+ * ------------------------------------------------------------------
+ * Performance-Entscheidungen:
+ *
+ * 1. Auf Touch-Geräten (Handy/Tablet) wird Lenis NICHT gestartet. Mobile
+ *    Browser scrollen nativ auf dem Compositor-Thread – das ist immer
+ *    flüssiger als eine JS-Simulation und spart eine dauerhafte
+ *    requestAnimationFrame-Schleife (= Akku + Hauptthread).
+ * 2. Kein GSAP/ScrollTrigger mehr: die Bibliothek wurde nur benutzt, um
+ *    Lenis mit einem Ticker zu versorgen. Ein schlankes rAF reicht dafür
+ *    und spart ~70 kB JavaScript im Haupt-Bundle.
+ * 3. Die rAF-Schleife pausiert, sobald der Tab im Hintergrund ist.
+ * 4. "prefers-reduced-motion" wird respektiert (natives Scrollen).
  */
 export function SmoothScroll({ children }: { children: React.ReactNode }) {
   useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
-
     const prefersReduced = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
+    const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
 
-    if (prefersReduced) {
-      ScrollTrigger.refresh();
-      return;
-    }
+    // Handy/Tablet oder reduzierte Bewegung → natives Scrollen, kein Lenis.
+    if (prefersReduced || coarsePointer) return;
 
     const lenis = new Lenis({
-      duration: 1.15,
+      duration: 1.0,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
+      // Touch bleibt nativ, falls das Gerät beides kann (z. B. Touch-Laptop)
+      syncTouch: false,
     });
-
-    // Lenis-Scroll an ScrollTrigger weiterreichen
-    lenis.on("scroll", ScrollTrigger.update);
 
     // Debug-Hook (nur mit ?debug) für präzises Scrollen in Tests
     if (window.location.search.includes("debug")) {
       (window as unknown as { __lenis?: Lenis }).__lenis = lenis;
     }
 
-    // GSAP-Ticker treibt Lenis (ein RAF-Loop für beide)
-    const raf = (time: number) => lenis.raf(time * 1000);
-    gsap.ticker.add(raf);
-    gsap.ticker.lagSmoothing(0);
+    let frame = 0;
+    const loop = (time: number) => {
+      lenis.raf(time);
+      frame = requestAnimationFrame(loop);
+    };
+    frame = requestAnimationFrame(loop);
 
-    // Nach dem ersten Layout Trigger neu berechnen
-    const refresh = () => ScrollTrigger.refresh();
-    const id = window.setTimeout(refresh, 300);
-    window.addEventListener("load", refresh);
+    // Im Hintergrund-Tab läuft die Schleife nicht weiter
+    const onVisibility = () => {
+      if (document.hidden) {
+        if (frame) {
+          cancelAnimationFrame(frame);
+          frame = 0;
+        }
+      } else if (!frame) {
+        frame = requestAnimationFrame(loop);
+      }
+    };
+    document.addEventListener("visibilitychange", onVisibility);
 
     return () => {
-      window.clearTimeout(id);
-      window.removeEventListener("load", refresh);
-      lenis.off("scroll", ScrollTrigger.update);
-      gsap.ticker.remove(raf);
+      document.removeEventListener("visibilitychange", onVisibility);
+      if (frame) cancelAnimationFrame(frame);
       lenis.destroy();
     };
   }, []);

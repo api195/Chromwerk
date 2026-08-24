@@ -73,11 +73,17 @@ const config: Config = {
           "0%,100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-10px)" },
         },
+        // Scroll-Hinweis im Hero (früher eine JS-Animation)
+        "scroll-hint": {
+          "0%,100%": { transform: "translateY(0)", opacity: "1" },
+          "50%": { transform: "translateY(12px)", opacity: "0.2" },
+        },
       },
       animation: {
         shimmer: "shimmer 6s linear infinite",
         "spin-slow": "spin-slow 24s linear infinite",
         float: "float 6s ease-in-out infinite",
+        "scroll-hint": "scroll-hint 1.8s ease-in-out infinite",
       },
     },
   },
