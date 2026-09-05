@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Field, Input, Select, Textarea } from "./FormControls";
+import { ExpressOption } from "./ExpressOption";
 import { Button } from "@/components/ui/Button";
 import { services } from "@/data/services";
 
@@ -48,6 +49,8 @@ export function BookingForm() {
     "idle"
   );
   const [files, setFiles] = useState<File[]>([]);
+  // Express-Bearbeitung (Aufpreis) – wird als Formularfeld mitgesendet
+  const [express, setExpress] = useState(false);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -65,6 +68,7 @@ export function BookingForm() {
       setStatus("success");
       form.reset();
       setFiles([]);
+      setExpress(false);
     } catch {
       setStatus("error");
     }
@@ -184,6 +188,11 @@ export function BookingForm() {
         <Field label="Nachricht" htmlFor="message" className="sm:col-span-2">
           <Textarea id="message" name="message" placeholder="Beschreibe kurz dein Anliegen …" />
         </Field>
+
+        {/* Express-Bearbeitung: Felgen gehen sofort in Produktion */}
+        <div className="sm:col-span-2">
+          <ExpressOption checked={express} onChange={setExpress} />
+        </div>
       </div>
 
       {status === "error" && (

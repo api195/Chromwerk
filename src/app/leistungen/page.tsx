@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Container } from "@/components/ui/Container";
 import { ServiceCard } from "@/components/cards/ServiceCard";
+import { ExpressHighlight } from "@/components/sections/ExpressHighlight";
 import { Reveal } from "@/components/ui/Reveal";
 import { Button } from "@/components/ui/Button";
 import { services } from "@/data/services";
@@ -27,6 +28,9 @@ export default function LeistungenPage() {
               <ServiceCard key={s.slug} service={s} index={i % 3} />
             ))}
           </div>
+
+          {/* Express-Bearbeitung gegen Aufpreis */}
+          <ExpressHighlight variant="banner" className="mt-20" />
 
           <Reveal>
             <div className="mt-20 rounded-3xl border border-white/10 bg-ink-900/40 p-10 text-center sm:p-14">

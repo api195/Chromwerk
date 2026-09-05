@@ -18,6 +18,10 @@ const FAQ_ITEMS: { q: string; a: string }[] = [
     a: "Je nach Zustand der Felgen in der Regel wenige Werktage. Den genauen Zeitrahmen nennen wir dir mit der Terminbestätigung – verbindlich und ohne Überraschungen.",
   },
   {
+    q: "Geht es auch schneller? (Express-Bearbeitung)",
+    a: "Ja. Mit der Express-Bearbeitung für 100 € Aufpreis gehen deine Felgen direkt nach der Annahme in Produktion, statt in der regulären Reihenfolge zu warten. Die Qualität bleibt identisch – es ist derselbe mehrstufige Prozess, deine Felgen kommen nur sofort dran. Du kannst Express direkt im Terminformular auswählen.",
+  },
+  {
     q: "Wie lange hält der Spiegelglanz?",
     a: "Die keramische Versiegelung schützt die verdichtete Oberfläche dauerhaft im Alltag. Mit der richtigen Pflege – pH-neutrale Reiniger statt aggressiver Felgenreiniger – bleibt der Glanz langfristig erhalten.",
   },
