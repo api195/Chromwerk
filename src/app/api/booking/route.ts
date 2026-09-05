@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { sendMail, fieldsToHtml, type MailAttachment } from "@/lib/mail";
+import { express, expressPriceLabel } from "@/data/express";
 
 /**
  * Terminanfrage-Endpoint.
@@ -73,11 +74,24 @@ export async function POST(request: Request) {
       });
     }
 
+    // Express-Bearbeitung: Die Checkbox sendet nur dann einen Wert, wenn sie
+    // gesetzt ist. Der Auftrag muss sofort erkennbar sein – deshalb landet er
+    // auch im Betreff, damit er im Postfach nicht untergeht.
+    const isExpress = get("express") !== "";
+
     const result = await sendMail({
-      subject: `Neue Terminanfrage von ${name}`,
+      subject: isExpress
+        ? `EXPRESS (${expressPriceLabel}) – Neue Terminanfrage von ${name}`
+        : `Neue Terminanfrage von ${name}`,
       replyTo: email,
       attachments,
       html: fieldsToHtml([
+        [
+          express.title,
+          isExpress
+            ? `JA – sofortige Bearbeitung gewünscht (${expressPriceLabel})`
+            : "",
+        ],
         ["Name", name],
         ["E-Mail", email],
         ["Telefon", get("phone")],
@@ -97,7 +111,8 @@ export async function POST(request: Request) {
         "[Chromwerk] Terminanfrage (nur geloggt):",
         name,
         email,
-        `${files.length} Bild(er)`
+        `${files.length} Bild(er)`,
+        isExpress ? "EXPRESS" : "Standard"
       );
     }
 

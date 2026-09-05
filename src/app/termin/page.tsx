@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Container } from "@/components/ui/Container";
 import { BookingForm } from "@/components/forms/BookingForm";
+import { ExpressHighlight } from "@/components/sections/ExpressHighlight";
 import { Faq } from "@/components/sections/Faq";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { site } from "@/data/site";
+import { expressPriceLabel } from "@/data/express";
 
 export const metadata: Metadata = {
   title: "Termin buchen",
@@ -20,6 +22,10 @@ const perks = [
   { title: "Unverbindlich", text: "Deine Anfrage ist kostenlos und ohne Verpflichtung." },
   { title: "Persönliche Beratung", text: "Wir prüfen deine Bilder und beraten dich individuell." },
   { title: "Schnelle Rückmeldung", text: "Antwort in der Regel innerhalb von 24 Stunden." },
+  {
+    title: "Express möglich",
+    text: `Für ${expressPriceLabel} gehen deine Felgen sofort in die Bearbeitung – direkt im Formular auswählbar.`,
+  },
 ];
 
 export default function TerminPage() {
@@ -52,6 +58,9 @@ export default function TerminPage() {
                   </div>
                 ))}
               </div>
+
+              {/* Express-Bearbeitung – im Formular direkt auswählbar */}
+              <ExpressHighlight className="mt-10" />
 
               <div className="mt-10 rounded-2xl border border-white/10 bg-ink-800/40 p-6">
                 <h3 className="font-display text-sm font-semibold uppercase tracking-widest text-chrome-200">
