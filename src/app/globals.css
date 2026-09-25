@@ -150,43 +150,190 @@
 /* ------------------------------------------------------------------ */
 
 /*
- * `backdrop-filter` ist auf Touch-Geräten der teuerste Effekt der Seite:
- * Der Browser muss für JEDE unscharfe Fläche bei jedem Scroll-Frame den
- * Hintergrund erneut einlesen und weichzeichnen. Auf Handy/Tablet wird der
- * Effekt daher komplett abgeschaltet – die Flächen bleiben halbtransparent
- * und sehen praktisch identisch aus, das Scrollen wird aber spürbar
- * flüssiger.
+ * Geräteprofil: `data-fx="rich"` auf <html> setzt lib/useMotionPrefs.ts
+ * nur auf leistungsfähigen Desktop-Geräten (Maus, genug CPU/RAM und keine
+ * schwache Grafikkarte). Alles andere – Handy, Tablet, Laptops mit
+ * sparsamer Intel-Grafik, und jedes Gerät, bevor das Profil feststeht –
+ * bekommt die günstigen Varianten.
  */
-@media (pointer: coarse) {
-  .backdrop-blur,
-  .backdrop-blur-sm,
-  .backdrop-blur-md,
-  .backdrop-blur-lg,
-  .backdrop-blur-xl,
-  .backdrop-blur-2xl,
-  .backdrop-blur-3xl,
-  .panel {
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-  }
 
-  /* Ohne Weichzeichnung braucht die Navigationsleiste etwas mehr Deckkraft,
-     damit der Text darüber gut lesbar bleibt. */
-  header.bg-ink-950\/80 {
-    background-color: rgb(5 5 6 / 0.94);
-  }
+/*
+ * `backdrop-filter` ist einer der teuersten Effekte der Seite: Der Browser
+ * muss für JEDE unscharfe Fläche bei jedem Scroll-Frame den Hintergrund
+ * (inklusive 3D-Canvas) erneut einlesen und weichzeichnen. Auf allen
+ * Geräten ohne volles Profil wird er daher abgeschaltet – die Flächen
+ * bleiben halbtransparent und sehen praktisch identisch aus.
+ */
+html:not([data-fx="rich"]) :is(
+    .backdrop-blur,
+    .backdrop-blur-sm,
+    .backdrop-blur-md,
+    .backdrop-blur-lg,
+    .backdrop-blur-xl,
+    .backdrop-blur-2xl,
+    .backdrop-blur-3xl,
+    .panel
+  ) {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Ohne Weichzeichnung braucht die Navigationsleiste etwas mehr Deckkraft,
+   damit der Text darüber gut lesbar bleibt. */
+html:not([data-fx="rich"]) header.bg-ink-950\/80 {
+  background-color: rgb(5 5 6 / 0.96);
 }
 
 /*
  * Dauerlaufende Verlaufs-Animationen auf Text (background-position) zeichnen
- * den Text bei jedem Bild neu. Auf Touch-Geräten deshalb aus.
+ * den Text bei jedem Bild neu. Ohne volles Profil deshalb aus.
  */
-@media (pointer: coarse) {
-  .text-chrome-animate,
-  .text-iridescent,
-  .shimmer {
-    animation: none;
+html:not([data-fx="rich"]) :is(.text-chrome-animate, .text-iridescent, .shimmer) {
+  animation: none;
+}
+
+/* ------------------------------------------------------------------ */
+/* Intro-Animationen (reines CSS – starten ohne auf JavaScript zu warten) */
+/* ------------------------------------------------------------------ */
+
+/* Hero: gestaffeltes Einblenden über --i (0, 1, 2 …).
+   `backwards`: Nach der Animation gelten wieder die normalen Styles –
+   so bleibt z. B. der drop-shadow der Überschrift erhalten. */
+@keyframes hero-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 20px, 0);
   }
+}
+@keyframes hero-in-blur {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 24px, 0);
+    filter: blur(8px);
+  }
+}
+.hero-in {
+  animation: hero-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  animation-delay: calc(var(--i, 0) * 140ms + 250ms);
+}
+/* Unschärfe nur auf großen Bildschirmen mit Maus (einmalig, beim Laden) */
+@media (hover: hover) and (pointer: fine) and (min-width: 1024px) {
+  .hero-in {
+    animation-name: hero-in-blur;
+    animation-duration: 1s;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+.hero-fade {
+  animation: fade-in 1s ease-out 1.4s backwards;
+}
+
+/* Navigationsleiste: kurze Einblendung, von Anfang an klickbar */
+@keyframes nav-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -16px, 0);
+  }
+}
+.nav-in {
+  animation: nav-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.1s backwards;
+}
+
+/* ------------------------------------------------------------------ */
+/* Prozess-Storytelling (components/sections/ProcessStory.tsx)          */
+/* ------------------------------------------------------------------ */
+/* Alle Schritte liegen übereinander; nur `data-phase` wechselt. Vorige
+   Schritte gleiten nach oben weg, kommende warten unten. */
+.ps-step,
+.ps-ghost {
+  transition-property: opacity, transform, filter;
+  transition-duration: 0.45s;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+.ps-step[data-phase="past"] {
+  opacity: 0;
+  transform: translate3d(0, -14px, 0);
+  pointer-events: none;
+}
+.ps-step[data-phase="next"] {
+  opacity: 0;
+  transform: translate3d(0, 20px, 0);
+  pointer-events: none;
+}
+html[data-fx="rich"] .ps-step:not([data-phase="active"]) {
+  filter: blur(8px);
+}
+
+.ps-ghost {
+  opacity: 0.06;
+}
+.ps-ghost[data-phase="past"] {
+  opacity: 0;
+  transform: scale(1.04);
+}
+.ps-ghost[data-phase="next"] {
+  opacity: 0;
+  transform: scale(0.94);
+}
+
+/* ------------------------------------------------------------------ */
+/* Scroll-Reveals (components/ui/Reveal.tsx & SplitReveal.tsx)         */
+/* ------------------------------------------------------------------ */
+/*
+ * Ausgelöst von lib/revealScript.ts: Das Skript setzt `data-js` auf <html>
+ * und `data-shown` auf jedes Element, das in den Viewport scrollt. Ohne
+ * JavaScript greifen die versteckten Startzustände nie – dann ist einfach
+ * alles sichtbar. Animiert werden nur Opacity und Transform (GPU).
+ */
+[data-reveal="up"],
+[data-reveal="fade"],
+[data-reveal="blur"],
+[data-reveal="scale"] {
+  transition-property: opacity, transform, filter;
+  transition-duration: 0.7s;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: calc(var(--rv-i, 0) * 70ms);
+}
+
+html[data-js] [data-reveal="up"]:not([data-shown]) {
+  opacity: 0;
+  transform: translate3d(0, 28px, 0);
+}
+html[data-js] [data-reveal="fade"]:not([data-shown]) {
+  opacity: 0;
+}
+html[data-js] [data-reveal="blur"]:not([data-shown]) {
+  opacity: 0;
+  transform: translate3d(0, 20px, 0);
+}
+html[data-js][data-fx="rich"] [data-reveal="blur"]:not([data-shown]) {
+  filter: blur(12px);
+}
+html[data-js] [data-reveal="scale"]:not([data-shown]) {
+  opacity: 0;
+  transform: scale(0.92);
+}
+
+/* Wort-für-Wort-Überschriften */
+.rv-word {
+  display: inline-block;
+  transition-property: opacity, transform, filter;
+  transition-duration: 0.6s;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: calc(var(--w, 0) * 45ms + 40ms);
+}
+html[data-js] [data-reveal="words"]:not([data-shown]) .rv-word {
+  opacity: 0;
+  transform: translate3d(0, 0.4em, 0);
+}
+html[data-js][data-fx="rich"] [data-reveal="words"]:not([data-shown]) .rv-word {
+  transform: translate3d(0, 0.5em, 0);
+  filter: blur(8px);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -201,17 +348,22 @@
 
   /*
    * Einblend-Animationen (Reveal / SplitReveal / Hero-Intro) hart auf den
-   * Endzustand zwingen. Das muss über CSS laufen, weil framer-motion seine
-   * Startwerte als Inline-Styles setzt – und zwar bevor JavaScript die
-   * Geräte-Einstellungen ausgewertet hat. Ein `!important` im Stylesheet
-   * schlägt Inline-Styles und garantiert damit, dass Inhalte für Nutzer
+   * Endzustand zwingen. `!important` schlägt auch Inline-Styles (wie sie
+   * framer-motion setzt) und garantiert damit, dass Inhalte für Nutzer
    * mit reduzierter Bewegung IMMER sichtbar sind – auch wenn sie nie in
    * den sichtbaren Bereich gescrollt werden.
    */
-  [data-reveal] {
+  [data-reveal],
+  [data-reveal] .rv-word {
     opacity: 1 !important;
     transform: none !important;
     filter: none !important;
+  }
+
+  .hero-in,
+  .hero-fade,
+  .nav-in {
+    animation: none !important;
   }
 
   /* Alle Übergänge/Animationen auf ein Minimum reduzieren */

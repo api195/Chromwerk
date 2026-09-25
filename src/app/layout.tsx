@@ -9,6 +9,7 @@ import { CartProvider } from "@/components/cart/CartProvider";
 import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
 import { LocalBusinessSchema } from "@/components/seo/LocalBusinessSchema";
 import { Analytics } from "@vercel/analytics/next";
+import { revealScript } from "@/lib/revealScript";
 
 /**
  * Schriften (self-hosted via next/font, kein externer Runtime-Request).
@@ -81,18 +82,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="de" className={`${display.variable} ${sans.variable}`}>
+    // suppressHydrationWarning: Das Reveal-Skript unten setzt `data-js` auf
+    // <html>, bevor React startet (gleiches Muster wie bei Theme-Skripten).
+    <html
+      lang="de"
+      className={`${display.variable} ${sans.variable}`}
+      suppressHydrationWarning
+    >
       <body className="font-sans">
+        {/* Scroll-Reveals ohne Warten auf React (siehe lib/revealScript.ts).
+            Muss vor dem Inhalt stehen, damit versteckte Startzustände schon
+            beim ersten Zeichnen gelten. */}
+        <script dangerouslySetInnerHTML={{ __html: revealScript }} />
         {/* Strukturierte Daten für lokales SEO (Google) */}
         <LocalBusinessSchema />
-        {/* Frühzeitiger Preload des 3D-Felgenmodells (nur Desktop-Geräte,
-            auf denen der 3D-Hintergrund tatsächlich rendert). Startet den
-            Download bereits beim HTML-Parsen statt erst nach der Hydration. */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `try{if(matchMedia('(min-width:1024px) and (pointer:fine)').matches&&(navigator.hardwareConcurrency||8)>4){var l=document.createElement('link');l.rel='preload';l.as='fetch';l.href='/chrom_felge.glb';l.crossOrigin='anonymous';document.head.appendChild(l);}}catch(e){}`,
-          }}
-        />
+        {/* Das 3D-Felgenmodell wird nicht mehr pauschal vorgeladen: Ob es
+            gebraucht wird, hängt von der Grafikkarte ab. WheelBackground
+            startet den Download, sobald das feststeht. */}
         <CartProvider>
           <SmoothScroll>
             <Navbar />

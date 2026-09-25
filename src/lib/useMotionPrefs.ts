@@ -1,19 +1,25 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { getGpuInfo } from "@/lib/gpu";
 
 /**
  * Bewegungs-Profil des Geräts
  * ------------------------------------------------------------------
  * Legt fest, wie „teuer" Animationen sein dürfen. Teure Effekte sind vor
- * allem `filter: blur()`-Animationen, `backdrop-filter`, 3D-Transforms und
- * Hover-Effekte, die pro Mausbewegung Layout lesen.
+ * allem `filter: blur()`-Animationen, `backdrop-filter`, 3D-Transforms,
+ * JavaScript-Smooth-Scroll und Hover-Effekte, die pro Mausbewegung Layout
+ * lesen.
  *
  * Wichtig für die Hydration: Auf dem Server und beim ersten Client-Render
  * wird IMMER das sparsame Profil geliefert. Erst nach dem Mount (useEffect)
  * schaltet ein leistungsfähiges Gerät auf die volle Version hoch. Dadurch
  * stimmen Server- und Client-Markup überein, und schwache Geräte bekommen
  * die teuren Effekte gar nicht erst zu sehen.
+ *
+ * Das Profil wird zusätzlich als `data-fx="rich" | "lean"` auf <html>
+ * gespiegelt, damit reine CSS-Effekte (Scroll-Reveals, Glas-Unschärfe der
+ * Navigation) dieselbe Entscheidung nutzen – ganz ohne React-Rerender.
  */
 export type MotionPrefs = {
   /** Nutzer bevorzugt reduzierte Bewegung */
@@ -26,7 +32,14 @@ export type MotionPrefs = {
 
 const LEAN: MotionPrefs = { reduced: false, fine: false, rich: false };
 
+/** Wird ausgelöst, wenn das Gerät zur Laufzeit auf „sparsam" herabgestuft wird. */
+export const LEAN_EVENT = "chromwerk:lean";
+
 let cached: MotionPrefs | null = null;
+
+function reflect(prefs: MotionPrefs) {
+  document.documentElement.setAttribute("data-fx", prefs.rich ? "rich" : "lean");
+}
 
 function detect(): MotionPrefs {
   if (typeof window === "undefined") return LEAN;
@@ -41,11 +54,15 @@ function detect(): MotionPrefs {
   // @ts-expect-error – deviceMemory ist experimentell und nicht überall da
   const memory: number = navigator?.deviceMemory ?? 8;
 
-  cached = {
-    reduced,
-    fine,
-    rich: !reduced && fine && window.innerWidth >= 1024 && cores > 4 && memory > 4,
-  };
+  const capableCpu =
+    !reduced && fine && window.innerWidth >= 1024 && cores > 4 && memory > 4;
+
+  // Die Grafikkarte wird nur geprüft, wenn der Rest schon passt – auf dem
+  // Handy wird dafür also nie ein WebGL-Kontext erzeugt.
+  const rich = capableCpu && getGpuInfo().tier !== "low";
+
+  cached = { reduced, fine, rich };
+  reflect(cached);
   return cached;
 }
 
@@ -72,4 +89,19 @@ export function useMotionPrefs(): MotionPrefs {
 /** Direkte (nicht-reaktive) Abfrage – nur im Browser aufrufen. */
 export function readMotionPrefs(): MotionPrefs {
   return detect();
+}
+
+/**
+ * Stuft das Gerät dauerhaft (für diesen Seitenbesuch) auf „sparsam" herab.
+ * Wird aufgerufen, wenn die 3D-Szene misst, dass selbst ihre leichte
+ * Variante nicht flüssig läuft – dann ist das Gerät überfordert, und alle
+ * übrigen teuren Effekte (Smooth-Scroll, Unschärfe) werden ebenfalls
+ * abgeschaltet.
+ */
+export function downgradeToLean() {
+  const current = detect();
+  if (!current.rich) return;
+  cached = { ...current, rich: false };
+  reflect(cached);
+  window.dispatchEvent(new Event(LEAN_EVENT));
 }

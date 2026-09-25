@@ -122,9 +122,34 @@ npx gltf-transform prune neu.glb tmp.glb --keep-attributes false
 npx gltf-transform meshopt tmp.glb public/chrom_felge.glb --level medium
 ```
 
-Der Download startet früh über einen Preload im Root-Layout
-(`src/app/layout.tsx`, nur auf Desktop-Geräten); die Felge blendet nach dem
+Ob und in welcher Qualität die Felge erscheint, entscheidet
+`hero/WheelBackground.tsx` erst im Browser – der Download startet nur dann
+(siehe **Performance auf allen Geräten** unten). Die Felge blendet nach dem
 Laden weich ein (`ChromeRimScroll.tsx`).
+
+### ⚡ Performance auf allen Geräten
+Die Seite passt sich an das Gerät an, damit sie überall flüssig läuft –
+auch auf günstigen Android-Handys und Windows-Laptops mit einfacher Grafik:
+
+- **Grafikkarten-Check** (`src/lib/gpu.ts`): Die 3D-Felge und teure Effekte
+  (Unschärfe, Smooth-Scroll) hängen nicht mehr nur an der CPU-Kernzahl,
+  sondern an der Grafikkarte. Apple Silicon / dedizierte GPU → volle
+  3D-Szene, integrierte Grafik (Iris Xe, Ryzen) → leichte Szene, ältere
+  Intel-Grafik / Handy → statischer Hintergrund.
+- **Bildraten-Wächter** (`ChromeRimScroll.tsx`): Die Szene misst vor dem
+  Einblenden unsichtbar, wie lange das Gerät pro Bild braucht, und schaltet
+  bei Bedarf still herunter (voll → leicht → aus). Auch beim Scrollen wird
+  weiter gemessen.
+- **Geräteprofil** (`src/lib/useMotionPrefs.ts`) wird als
+  `data-fx="rich" | "lean"` auf `<html>` gesetzt; CSS-Effekte in
+  `globals.css` richten sich danach.
+- **Kein Warten auf JavaScript:** Hero-Intro, Navigation und Scroll-Reveals
+  (`ui/Reveal.tsx`, `ui/SplitReveal.tsx`) sind reines CSS, ausgelöst von einem
+  kleinen Inline-Skript (`src/lib/revealScript.ts`). Inhalte erscheinen
+  sofort – nicht erst, wenn React fertig geladen ist.
+
+Debug-URL-Parameter für die Felge: `?wheel=0` (aus), `?wheel=high` bzw.
+`?wheel=1` (volle Stufe erzwingen), `?wheel=lite` (leichte Stufe erzwingen).
 
 ### 🛞 Cinematische 3D-Hero (Alternative)
 Die Hero-Section liegt in `src/components/hero/`:
@@ -153,7 +178,8 @@ Chrom-Fortschrittslinie.
 **Motion-Primitive** (wiederverwendbar):
 - `ui/MagneticButton.tsx` – magnetischer Hover
 - `ui/TiltCard.tsx` – 3D-Tilt + wandernder Licht-Glanz (auf allen Karten)
-- `ui/Reveal.tsx` – Scroll-Reveals mit Varianten (`up`/`fade`/`blur`/`scale`)
+- `ui/Reveal.tsx` – Scroll-Reveals mit Varianten (`up`/`fade`/`blur`/`scale`),
+  reines CSS (Server-Komponente)
 
 **Performance:** Auf mobilen/schwächeren Geräten (`useDeviceTier`) wird
 automatisch eine reduzierte Variante geladen (weniger Partikel, leichteres
