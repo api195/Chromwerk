@@ -24,6 +24,10 @@ export function Logo({
       alt="Chromwerk Köln – Hochglanzverdichtung von Felgen"
       width={720}
       height={366}
+      // Angezeigt wird das Logo nur ~95–110 px breit. Ohne `sizes` lud der
+      // Browser auf Handys die 1920 px breite Variante – mit höchster
+      // Priorität, in Konkurrenz zu Schriften und JavaScript.
+      sizes="(min-width: 640px) 110px, 95px"
       priority
       className={cn("h-12 w-auto select-none sm:h-14", className)}
     />

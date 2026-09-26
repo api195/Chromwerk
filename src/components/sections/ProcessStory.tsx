@@ -1,15 +1,8 @@
 "use client";
 
-import { useRef, useState } from "react";
-import {
-  AnimatePresence,
-  motion,
-  useMotionValueEvent,
-  useScroll,
-  useTransform,
-} from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 import { Container } from "@/components/ui/Container";
-import { useMotionPrefs } from "@/lib/useMotionPrefs";
+import { subscribeScroll } from "@/lib/scroll";
 import { cn } from "@/lib/utils";
 
 /**
@@ -19,17 +12,24 @@ import { cn } from "@/lib/utils";
  *
  * Performance
  * ------------------------------------------------------------------
- * Diese Sektion ist über 400vh hoch und liegt über dem fixierten
- * 3D-Hintergrund. Sie hatte deshalb den größten Anteil am Ruckeln:
+ * Diese Sektion ist mehrere Bildschirmhöhen hoch und liegt über dem
+ * fixierten 3D-Hintergrund – sie ist die „scroll-lastigste" Stelle der Seite.
  *
- *  • `backdrop-blur-sm` auf der gesamten Fläche zwang den Browser, bei
- *    JEDEM Scroll-Frame den kompletten Bildschirminhalt (inklusive
- *    WebGL-Canvas) einzulesen und weichzuzeichnen. Ersetzt durch eine
- *    deckendere Farbfläche – optisch fast identisch, aber praktisch
- *    kostenlos.
- *  • Die riesige Geister-Nummer (42vw!) wurde mit `filter: blur()`
- *    ein- und ausgeblendet. Bei dieser Fläche ist das extrem teuer;
- *    jetzt nur noch Opacity + Scale (beides läuft auf der GPU).
+ *  • Deckende Farbfläche statt `backdrop-blur` (das hätte bei JEDEM
+ *    Scroll-Frame den kompletten Bildschirm inkl. WebGL-Canvas neu
+ *    weichgezeichnet).
+ *  • Überblendungen sind reine CSS-Transitions (Opacity + Transform, auf
+ *    der GPU). Alle Schritte liegen übereinander im DOM; beim Wechsel
+ *    ändert sich nur ein Attribut. Früher lief jeder Wechsel als
+ *    JavaScript-Animation mit Ein- UND Ausblenden nacheinander
+ *    (AnimatePresence mode="wait") – bei schnellem Scrollen hinkte der
+ *    Text hinterher.
+ *  • Die Fortschrittslinie wird per `transform: scaleY()` direkt im DOM
+ *    gesetzt – früher wurde ihre Höhe animiert, was pro Scroll-Frame ein
+ *    Layout erzwang, und jedes Update lief über React.
+ *  • Position/Höhe der Sektion werden nur bei Größenänderungen gemessen,
+ *    nicht beim Scrollen. React rendert nur, wenn der Schritt wechselt.
+ *  • Unschärfe beim Überblenden nur mit vollem Geräteprofil (globals.css).
  */
 const steps = [
   {
@@ -62,22 +62,62 @@ const steps = [
   },
 ];
 
+const pad = (n: number) => String(n).padStart(2, "0");
+
+/** Zustand eines Schritts relativ zum aktiven: vorbei / aktiv / kommt noch */
+function phase(i: number, active: number) {
+  return i < active ? "past" : i === active ? "active" : "next";
+}
+
 export function ProcessStory() {
   const ref = useRef<HTMLElement>(null);
+  const fillRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
-  const { rich } = useMotionPrefs();
 
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start start", "end end"],
-  });
+  useEffect(() => {
+    const section = ref.current;
+    if (!section) return;
 
-  useMotionValueEvent(scrollYProgress, "change", (v) => {
-    const i = Math.min(steps.length - 1, Math.floor(v * steps.length));
-    if (i !== active) setActive(i);
-  });
+    // Gecachte Geometrie – gemessen nur bei Größenänderungen.
+    let top = 0;
+    let range = 1;
+    let lastY = window.scrollY;
+    let current = -1;
 
-  const fillHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+    const apply = (y: number) => {
+      lastY = y;
+      const progress = Math.min(1, Math.max(0, (y - top) / range));
+      const i = Math.min(steps.length - 1, Math.floor(progress * steps.length));
+      if (i !== current) {
+        current = i;
+        setActive(i);
+      }
+      if (fillRef.current) fillRef.current.style.transform = `scaleY(${progress})`;
+    };
+
+    const measure = () => {
+      const rect = section.getBoundingClientRect();
+      top = rect.top + window.scrollY;
+      range = Math.max(1, section.offsetHeight - window.innerHeight);
+      apply(lastY);
+    };
+
+    measure();
+    // Eigene Größe UND Dokumenthöhe beobachten: Öffnet sich weiter oben z. B.
+    // eine FAQ-Antwort, verschiebt sich die Sektion, ohne selbst größer zu
+    // werden.
+    const ro = new ResizeObserver(measure);
+    ro.observe(section);
+    ro.observe(document.documentElement);
+    window.addEventListener("resize", measure, { passive: true });
+    const unsubscribe = subscribeScroll((y) => apply(y));
+
+    return () => {
+      unsubscribe();
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, []);
 
   return (
     <section
@@ -91,19 +131,19 @@ export function ProcessStory() {
     >
       <div className="sticky top-0 flex h-[100svh] items-center overflow-hidden">
         {/* Riesige Geister-Nummer im Hintergrund */}
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center lg:justify-end lg:pr-[8%]">
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.span
-              key={active}
-              initial={{ opacity: 0, scale: 0.94 }}
-              animate={{ opacity: 0.06, scale: 1 }}
-              exit={{ opacity: 0, scale: 1.04 }}
-              transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-              className="font-display text-[42vw] font-bold leading-none text-white lg:text-[30vw]"
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 grid place-items-center lg:justify-end lg:justify-items-end lg:pr-[8%]"
+        >
+          {steps.map((s, i) => (
+            <span
+              key={s.title}
+              data-phase={phase(i, active)}
+              className="ps-ghost font-display text-[42vw] font-bold leading-none text-white [grid-area:1/1] lg:text-[30vw]"
             >
-              {String(active + 1).padStart(2, "0")}
-            </motion.span>
-          </AnimatePresence>
+              {pad(i + 1)}
+            </span>
+          ))}
         </div>
 
         <Container className="relative">
@@ -117,42 +157,32 @@ export function ProcessStory() {
 
               <div className="mt-6 flex items-baseline gap-4">
                 <span className="font-display text-2xl font-semibold text-chrome-500">
-                  {String(active + 1).padStart(2, "0")}
-                  <span className="text-chrome-700"> / {String(steps.length).padStart(2, "0")}</span>
+                  {pad(active + 1)}
+                  <span className="text-chrome-700"> / {pad(steps.length)}</span>
                 </span>
               </div>
 
-              <div className="relative mt-3 min-h-[9rem]">
-                <AnimatePresence mode="wait" initial={false}>
-                  <motion.div
-                    key={active}
-                    // Blur nur auf leistungsfähigen Geräten – auf dem Handy
-                    // reicht Opacity + Verschiebung und läuft deutlich runder.
-                    initial={
-                      rich
-                        ? { opacity: 0, y: 24, filter: "blur(8px)" }
-                        : { opacity: 0, y: 20 }
-                    }
-                    animate={
-                      rich
-                        ? { opacity: 1, y: 0, filter: "blur(0px)" }
-                        : { opacity: 1, y: 0 }
-                    }
-                    exit={
-                      rich
-                        ? { opacity: 0, y: -16, filter: "blur(8px)" }
-                        : { opacity: 0, y: -14 }
-                    }
-                    transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-                  >
-                    <h3 className="font-display text-4xl font-bold uppercase leading-tight tracking-tight text-transparent bg-chrome-text bg-clip-text sm:text-5xl lg:text-6xl">
-                      {steps[active].title}
-                    </h3>
-                    <p className="mt-4 max-w-md text-base leading-relaxed text-chrome-300">
-                      {steps[active].text}
-                    </p>
-                  </motion.div>
-                </AnimatePresence>
+              {/* Alle Schritte liegen übereinander (gleiche Grid-Zelle); die
+                  Zelle ist so hoch wie der längste Text – kein Springen. */}
+              <div className="relative mt-3 grid min-h-[9rem]">
+                {steps.map((s, i) => {
+                  const p = phase(i, active);
+                  return (
+                    <div
+                      key={s.title}
+                      data-phase={p}
+                      aria-hidden={p !== "active"}
+                      className="ps-step [grid-area:1/1]"
+                    >
+                      <h3 className="font-display text-4xl font-bold uppercase leading-tight tracking-tight text-transparent bg-chrome-text bg-clip-text sm:text-5xl lg:text-6xl">
+                        {s.title}
+                      </h3>
+                      <p className="mt-4 max-w-md text-base leading-relaxed text-chrome-300">
+                        {s.text}
+                      </p>
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
@@ -160,10 +190,11 @@ export function ProcessStory() {
             <div className="relative hidden pl-8 lg:block">
               {/* Grundlinie */}
               <div className="absolute left-[3px] top-2 bottom-2 w-px bg-white/10" />
-              {/* Chrom-Füllung */}
-              <motion.div
-                style={{ height: fillHeight }}
-                className="absolute left-[2px] top-2 w-0.5 bg-gradient-to-b from-white via-chrome-300 to-crimson"
+              {/* Chrom-Füllung (scaleY wird direkt beim Scrollen gesetzt) */}
+              <div
+                ref={fillRef}
+                style={{ transform: "scaleY(0)" }}
+                className="absolute left-[2px] top-2 bottom-2 w-0.5 origin-top bg-gradient-to-b from-white via-chrome-300 to-crimson"
               />
               <ul className="space-y-5">
                 {steps.map((s, i) => {
@@ -173,7 +204,7 @@ export function ProcessStory() {
                     <li key={s.title} className="relative flex items-center gap-4">
                       <span
                         className={cn(
-                          "relative -ml-8 flex h-2.5 w-2.5 items-center justify-center rounded-full transition-all duration-500",
+                          "relative -ml-8 flex h-2.5 w-2.5 items-center justify-center rounded-full transition-[transform,background-color,box-shadow] duration-500",
                           now
                             ? "scale-150 bg-crimson shadow-glow"
                             : done

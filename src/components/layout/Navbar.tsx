@@ -15,31 +15,12 @@ export function Navbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  // Navigation blendet kurz mit dem Hero-Intro ein.
-  const [revealed, setRevealed] = useState(false);
 
   // Gemeinsame Scroll-Quelle (ein rAF-gebündelter Listener für die ganze
   // Seite) statt eines eigenen Handlers pro Komponente.
   useEffect(() => {
     return subscribeScroll((y) => setScrolled(y > 24));
   }, []);
-
-  // Sichtbarkeit steuern.
-  //
-  // Früher wartete die Startseite auf ein Event ("chromwerk:hero-ready"),
-  // das nur die inzwischen nicht mehr genutzten Hero-Varianten ausgelöst
-  // haben. Der aktuelle Hero sendet es nicht – die Navigation blieb dadurch
-  // acht Sekunden lang unsichtbar UND nicht anklickbar (pointer-events-none).
-  // Genau so etwas fühlt sich für Besucher wie „die Seite hängt" an.
-  // Jetzt: sofort da, nur mit einer kurzen Einblendung.
-  useEffect(() => {
-    if (pathname !== "/") {
-      setRevealed(true);
-      return;
-    }
-    const id = window.setTimeout(() => setRevealed(true), 250);
-    return () => window.clearTimeout(id);
-  }, [pathname]);
 
   // Menü bei Navigation schließen
   useEffect(() => {
@@ -57,16 +38,18 @@ export function Navbar() {
   return (
     <header
       className={cn(
+        // Sichtbar und klickbar ab dem ersten Bild. Früher war die Leiste
+        // bis nach dem Laden von React unsichtbar und nicht anklickbar
+        // (auf langsamen Handys mehrere Sekunden – wirkt wie ein Hänger).
+        // Die kurze Einblendung ist jetzt eine reine CSS-Animation.
+        "nav-in fixed inset-x-0 top-0 z-[60]",
         // Nur die Eigenschaften animieren, die sich wirklich ändern –
         // `transition-all` würde auch backdrop-filter mit-animieren und
         // die Leiste bei jedem Scroll-Start neu komponieren lassen.
-        "fixed inset-x-0 top-0 z-[60] transition-[background-color,border-color,opacity,transform] duration-500",
+        "transition-[background-color,border-color] duration-500",
         scrolled
           ? "border-b border-white/10 bg-ink-950/80 backdrop-blur-md"
-          : "border-b border-transparent bg-transparent",
-        revealed
-          ? "translate-y-0 opacity-100"
-          : "pointer-events-none -translate-y-4 opacity-0"
+          : "border-b border-transparent bg-transparent"
       )}
     >
       <Container className="flex h-20 items-center justify-between">

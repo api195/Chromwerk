@@ -2,31 +2,31 @@
 
 import { useEffect } from "react";
 import Lenis from "lenis";
+import { LEAN_EVENT, readMotionPrefs } from "@/lib/useMotionPrefs";
 
 /**
- * SmoothScroll – weiches Scrollen (Lenis) auf Desktop.
+ * SmoothScroll – weiches Scrollen (Lenis) auf leistungsfähigen Desktops.
  * ------------------------------------------------------------------
  * Performance-Entscheidungen:
  *
- * 1. Auf Touch-Geräten (Handy/Tablet) wird Lenis NICHT gestartet. Mobile
- *    Browser scrollen nativ auf dem Compositor-Thread – das ist immer
- *    flüssiger als eine JS-Simulation und spart eine dauerhafte
- *    requestAnimationFrame-Schleife (= Akku + Hauptthread).
- * 2. Kein GSAP/ScrollTrigger mehr: die Bibliothek wurde nur benutzt, um
- *    Lenis mit einem Ticker zu versorgen. Ein schlankes rAF reicht dafür
- *    und spart ~70 kB JavaScript im Haupt-Bundle.
- * 3. Die rAF-Schleife pausiert, sobald der Tab im Hintergrund ist.
- * 4. "prefers-reduced-motion" wird respektiert (natives Scrollen).
+ * 1. Lenis läuft nur mit vollem Geräteprofil (`rich`: Maus, genug CPU/RAM,
+ *    keine schwache Grafikkarte). Lenis verlegt das Scrollen auf den
+ *    Haupt-Thread: Ist der kurz beschäftigt (z. B. mit der 3D-Szene auf
+ *    einer schwachen Laptop-Grafik), stockt dann das Scrollen selbst.
+ *    Überall sonst scrollt der Browser nativ auf dem Compositor-Thread –
+ *    das bleibt flüssig, egal wie viel die Seite gerade rechnet. (Chrome,
+ *    Edge und Firefox glätten das Mausrad unter Windows ohnehin selbst.)
+ * 2. Stellt sich zur Laufzeit heraus, dass das Gerät überfordert ist
+ *    (3D-Szene misst zu niedrige Bildraten), wird Lenis wieder beendet.
+ * 3. Kein GSAP/ScrollTrigger: ein schlankes rAF reicht als Ticker.
+ * 4. Die rAF-Schleife pausiert, sobald der Tab im Hintergrund ist.
+ * 5. "prefers-reduced-motion" wird respektiert (natives Scrollen).
  */
 export function SmoothScroll({ children }: { children: React.ReactNode }) {
   useEffect(() => {
-    const prefersReduced = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-    const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
-
-    // Handy/Tablet oder reduzierte Bewegung → natives Scrollen, kein Lenis.
-    if (prefersReduced || coarsePointer) return;
+    // Wertet auch das Geräteprofil aus und setzt `data-fx` auf <html>.
+    const prefs = readMotionPrefs();
+    if (!prefs.rich) return;
 
     const lenis = new Lenis({
       duration: 1.0,
@@ -42,6 +42,7 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
     }
 
     let frame = 0;
+    let destroyed = false;
     const loop = (time: number) => {
       lenis.raf(time);
       frame = requestAnimationFrame(loop);
@@ -50,6 +51,7 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
 
     // Im Hintergrund-Tab läuft die Schleife nicht weiter
     const onVisibility = () => {
+      if (destroyed) return;
       if (document.hidden) {
         if (frame) {
           cancelAnimationFrame(frame);
@@ -59,13 +61,22 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
         frame = requestAnimationFrame(loop);
       }
     };
-    document.addEventListener("visibilitychange", onVisibility);
 
-    return () => {
+    const teardown = () => {
+      if (destroyed) return;
+      destroyed = true;
       document.removeEventListener("visibilitychange", onVisibility);
+      window.removeEventListener(LEAN_EVENT, teardown);
       if (frame) cancelAnimationFrame(frame);
+      frame = 0;
       lenis.destroy();
     };
+
+    document.addEventListener("visibilitychange", onVisibility);
+    // Gerät zur Laufzeit als überfordert erkannt → zurück zu nativem Scrollen
+    window.addEventListener(LEAN_EVENT, teardown);
+
+    return teardown;
   }, []);
 
   return <>{children}</>;
