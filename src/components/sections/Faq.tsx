@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 const FAQ_ITEMS: { q: string; a: string }[] = [
   {
     q: "Was kostet die Hochglanzverdichtung?",
-    a: "Ein kompletter Satz (4 Felgen) kostet circa 600 € – inklusive keramischer Versiegelung. Schick uns einfach Bilder deiner Felgen über das Formular oder per WhatsApp, dann bekommst du eine verbindliche Einschätzung.",
+    a: "Ein kompletter Satz (4 Felgen) kostet ab circa 600 € – inklusive keramischer Versiegelung. Schick uns einfach Bilder deiner Felgen über das Formular oder per WhatsApp, dann bekommst du eine verbindliche Einschätzung.",
   },
   {
     q: "Wie lange dauert die Bearbeitung?",
@@ -19,7 +19,7 @@ const FAQ_ITEMS: { q: string; a: string }[] = [
   },
   {
     q: "Geht es auch schneller? (Express-Bearbeitung)",
-    a: "Ja. Mit der Express-Bearbeitung für 100 € Aufpreis gehen deine Felgen direkt nach der Annahme in Produktion, statt in der regulären Reihenfolge zu warten. Die Qualität bleibt identisch – es ist derselbe mehrstufige Prozess, deine Felgen kommen nur sofort dran. Du kannst Express direkt im Terminformular auswählen.",
+    a: "Ja. Mit der Express-Bearbeitung für ab circa 100 € Aufpreis gehen deine Felgen direkt nach der Annahme in Produktion, statt in der regulären Reihenfolge zu warten. Die Qualität bleibt identisch – es ist derselbe mehrstufige Prozess, deine Felgen kommen nur sofort dran. Du kannst Express direkt im Terminformular auswählen.",
   },
   {
     q: "Wie lange hält der Spiegelglanz?",

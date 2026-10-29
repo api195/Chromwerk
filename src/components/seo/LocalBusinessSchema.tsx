@@ -25,8 +25,6 @@ export function LocalBusinessSchema() {
     currenciesAccepted: "EUR",
     address: {
       "@type": "PostalAddress",
-      streetAddress: site.address.street,
-      postalCode: site.address.zip,
       addressLocality: site.address.city,
       addressCountry: "DE",
     },
@@ -62,8 +60,12 @@ export function LocalBusinessSchema() {
           "@type": "Service",
           name: "Hochglanzverdichtung von Felgen (Satz, inkl. Keramikversiegelung)",
         },
-        priceCurrency: "EUR",
-        price: "600",
+        // „ab circa 600 €" – als Mindestpreis ausgezeichnet
+        priceSpecification: {
+          "@type": "PriceSpecification",
+          minPrice: "600",
+          priceCurrency: "EUR",
+        },
       },
       {
         "@type": "Offer",

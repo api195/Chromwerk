@@ -17,14 +17,14 @@ export const metadata: Metadata = {
 const perks = [
   {
     title: "Faire Preise",
-    text: "Kompletter Satz (4 Felgen) inkl. Keramikversiegelung: ca. 600 €.",
+    text: "Kompletter Satz (4 Felgen) inkl. Keramikversiegelung: ab circa 600 €.",
   },
   { title: "Unverbindlich", text: "Deine Anfrage ist kostenlos und ohne Verpflichtung." },
   { title: "Persönliche Beratung", text: "Wir prüfen deine Bilder und beraten dich individuell." },
   { title: "Schnelle Rückmeldung", text: "Antwort in der Regel innerhalb von 24 Stunden." },
   {
     title: "Express möglich",
-    text: `Für ${expressPriceLabel} gehen deine Felgen sofort in die Bearbeitung – direkt im Formular auswählbar.`,
+    text: `Für ${expressPriceLabel} Aufpreis gehen deine Felgen sofort in die Bearbeitung – direkt im Formular auswählbar.`,
   },
 ];
 

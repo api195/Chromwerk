@@ -22,5 +22,5 @@ export const express = {
   note: "Der Aufpreis gilt pro Auftrag und wird dir mit der Terminbestätigung verbindlich bestätigt.",
 } as const;
 
-/** Formatierter Aufpreis, z. B. "+100 €" */
-export const expressPriceLabel = `+${express.price} €`;
+/** Formatierter Aufpreis, z. B. "ab circa 100 €" */
+export const expressPriceLabel = `ab circa ${express.price} €`;
