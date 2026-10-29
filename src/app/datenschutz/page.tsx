@@ -42,6 +42,8 @@ export default function DatenschutzPage() {
               <p>
                 Chromwerk
                 <br />
+                betrieben von A. Sucu
+                <br />
                 Köln, Deutschland
               </p>
               <p>
