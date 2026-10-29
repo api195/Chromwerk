@@ -42,14 +42,7 @@ export default function DatenschutzPage() {
               <p>
                 Chromwerk
                 <br />
-                betrieben von Abdulhamid Sucu
-              </p>
-              <p>
-                Reutlinger Str. 37
-                <br />
-                50739 Köln
-                <br />
-                Deutschland
+                Köln, Deutschland
               </p>
               <p>
                 E-Mail:{" "}

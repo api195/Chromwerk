@@ -87,9 +87,7 @@ export function Footer() {
             </h3>
             <ul className="mt-5 space-y-3 text-sm text-chrome-400">
               <li>
-                {site.address.street}
-                <br />
-                {site.address.zip} {site.address.city}
+                {site.address.city}
               </li>
               <li>
                 <a href={`tel:${site.phone.replace(/\s|\(|\)/g, "")}`} className="transition hover:text-white">

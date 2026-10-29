@@ -25,14 +25,7 @@ export default function ImpressumPage() {
               <p className="mt-4">
                 Chromwerk
                 <br />
-                betrieben von Abdulhamid Sucu
-              </p>
-              <p className="mt-4">
-                Reutlinger Str. 37
-                <br />
-                50739 Köln
-                <br />
-                Deutschland
+                Köln, Deutschland
               </p>
               <p className="mt-4">
                 Telefon: 01792693001
@@ -44,21 +37,6 @@ export default function ImpressumPage() {
                 >
                   info@chromwerk.org
                 </a>
-              </p>
-            </div>
-
-            <div>
-              <h2 className="font-display text-lg font-semibold uppercase tracking-wide text-chrome-100">
-                Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV
-              </h2>
-              <p className="mt-4">
-                Abdulhamid Sucu
-                <br />
-                Reutlinger Str. 37
-                <br />
-                50739 Köln
-                <br />
-                Deutschland
               </p>
             </div>
           </div>
