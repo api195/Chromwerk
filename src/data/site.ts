@@ -17,9 +17,9 @@ export const site = {
   /** WhatsApp-Nummer im internationalen Format (für wa.me-Links) */
   whatsapp: "491792693001",
   email: "info@chromwerk.org",
-  // Bewusst ohne Straße/Hausnummer: Die genaue Adresse wird nur mit der
-  // Terminbestätigung mitgeteilt.
   address: {
+    street: "Reutlinger Str. 37",
+    zip: "50739",
     city: "Köln",
     country: "Deutschland",
   },
