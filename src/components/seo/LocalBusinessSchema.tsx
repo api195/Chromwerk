@@ -25,6 +25,8 @@ export function LocalBusinessSchema() {
     currenciesAccepted: "EUR",
     address: {
       "@type": "PostalAddress",
+      streetAddress: site.address.street,
+      postalCode: site.address.zip,
       addressLocality: site.address.city,
       addressCountry: "DE",
     },

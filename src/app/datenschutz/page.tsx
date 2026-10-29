@@ -43,8 +43,13 @@ export default function DatenschutzPage() {
                 Chromwerk
                 <br />
                 betrieben von A. Sucu
+              </p>
+              <p>
+                Reutlinger Str. 37
                 <br />
-                Köln, Deutschland
+                50739 Köln
+                <br />
+                Deutschland
               </p>
               <p>
                 E-Mail:{" "}
