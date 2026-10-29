@@ -60,10 +60,10 @@ export function LocalBusinessSchema() {
           "@type": "Service",
           name: "Hochglanzverdichtung von Felgen (Satz, inkl. Keramikversiegelung)",
         },
-        // „ab circa 600 €" – als Mindestpreis ausgezeichnet
+        // „ab 700 €" – als Mindestpreis ausgezeichnet
         priceSpecification: {
           "@type": "PriceSpecification",
-          minPrice: "600",
+          minPrice: "700",
           priceCurrency: "EUR",
         },
       },

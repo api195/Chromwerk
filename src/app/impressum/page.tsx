@@ -25,6 +25,8 @@ export default function ImpressumPage() {
               <p className="mt-4">
                 Chromwerk
                 <br />
+                betrieben von A. Sucu
+                <br />
                 Köln, Deutschland
               </p>
               <p className="mt-4">

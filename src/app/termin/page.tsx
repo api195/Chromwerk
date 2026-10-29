@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 const perks = [
   {
     title: "Faire Preise",
-    text: "Kompletter Satz (4 Felgen) inkl. Keramikversiegelung: ab circa 600 €.",
+    text: "Kompletter Satz (4 Felgen) inkl. Keramikversiegelung: ab 700 €.",
   },
   { title: "Unverbindlich", text: "Deine Anfrage ist kostenlos und ohne Verpflichtung." },
   { title: "Persönliche Beratung", text: "Wir prüfen deine Bilder und beraten dich individuell." },
